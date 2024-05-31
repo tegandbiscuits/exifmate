@@ -13,4 +13,7 @@ if __name__ == "__main__":
   QQuickStyle.setStyle("macOS")
   engine = QQmlApplicationEngine("src/view.qml")
 
+  if not engine.rootObjects():
+    sys.exit(1)
+
   sys.exit(app.exec())
