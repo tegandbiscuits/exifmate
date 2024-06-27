@@ -1,0 +1,210 @@
+{
+  "exif": {
+    "ApertureValue": {
+      "tag_id": 37378
+    },
+    "MaxApertureValue": {
+      "tag_id": 37381
+    },
+    "BrightnessValue": {
+      "tag_id": 37379
+    },
+    "ColorSpace": {
+      "tag_id": 40961,
+      "value_to_human": {
+        "1": "sRGB",
+        "2": "Adobe RGB",
+        "65533": "Wide Gamut RGB",
+        "65534": "ICC Profile",
+        "65535": "Uncalibrated"
+      }
+    },
+    "ComponentsConfiguration": {
+      "tag_id": 37121,
+      "is_byte_int_array": true
+    },
+    "ExifVersion": {
+      "tag_id": 36864,
+      "is_byte_string": true
+    },
+    "ExposureBiasValue": {
+      "tag_id": 37380
+    },
+    "ExposureMode": {
+      "tag_id": 41986,
+      "value_to_human": {
+        "0": "Auto",
+        "1": "Manual",
+        "2": "Auto bracket"
+      }
+    },
+    "ExposureProgram": {
+      "tag_id": 34850,
+      "value_to_human": {
+        "0": "Not Defined",
+        "1": "Manual",
+        "2": "Program AE",
+        "3": "Aperture-priority AE",
+        "4": "Shutter speed priority AE",
+        "5": "Creative (Slow speed)",
+        "6": "Action (High speed)",
+        "7": "Portrait",
+        "8": "Landscape",
+        "9": "Bulb"
+      }
+    },
+    "ExposureTime": {
+      "tag_id": 33434
+    },
+    "Flash": {
+      "tag_id": 37385,
+      "value_to_human": {
+        "0": "No Flash",
+        "1": "Fired",
+        "5": "Fired, Return not detected",
+        "7": "Fired, Return detected",
+        "8": "On, Did not fire",
+        "9": "On, Fired",
+        "13": "On, Return not detected",
+        "15": "On, Return detected",
+        "16": "Off, Did not fire",
+        "20": "Off, Did not fire, Return not detected",
+        "24": "Auto, Did not fire",
+        "25": "Auto, Fired",
+        "29": "Auto, Fired, Return not detected",
+        "31": "Auto, Fired, Return detected",
+        "32": "No flash function",
+        "40": "Off, No flash function",
+        "65": "Fired, Red-eye reduction",
+        "69": "Fired, Red-eye reduction, Return not detected",
+        "71": "Fired, Red-eye reduction, Return detected",
+        "73": "On, Red-eye reduction",
+        "77": "On, Red-eye reduction, Return not detected",
+        "79": "On, Red-eye reduction, Return detected",
+        "80": "Off, Red-eye reduction",
+        "88": "Auto, Did not fire, Red-eye reduction",
+        "89": "Auto, Fired, Red-eye reduction",
+        "93": "Auto, Fired, Red-eye reduction, Return not detected",
+        "95": "Auto, Fired, Red-eye reduction, Return detected"
+      }
+    },
+    "FlashPixVersion": {
+      "tag_id": 40960,
+      "is_byte_string": true
+    },
+    "FNumber": {
+      "tag_id": 33437
+    },
+    "FocalLength": {
+      "tag_id": 37386
+    },
+    "FocalLengthIn35mmFilm": {
+      "tag_id": 41989
+    },
+    "MeteringMode": {
+      "tag_id": 37383,
+      "value_to_human": {
+        "0": "Unknown",
+        "1": "Average",
+        "2": "Center-weighted average",
+        "3": "Spot",
+        "4": "Multi-spot",
+        "5": "Multi-segment",
+        "6": "Partial",
+        "255": "Other"
+      }
+    },
+    "ProfileName": {
+      "tag_id": 50936
+    },
+    "SceneCaptureType": {
+      "tag_id": 41990,
+      "value_to_human": {
+        "0": "Standard",
+        "1": "Landscape",
+        "2": "Portrait",
+        "3": "Night",
+        "4": "Other"
+      }
+    },
+    "SceneType": {
+      "tag_id": 41729,
+      "value_to_human": {
+        "1": "Directly photographed"
+      }
+    },
+    "SensingMethod": {
+      "tag_id": 41495,
+      "value_to_human": {
+        "1": "Monochrome area",
+        "2": "One-chip color area",
+        "3": "Two-chip color area",
+        "4": "Three-chip color area",
+        "5": "Color sequential area",
+        "6": "Monochrome linear",
+        "7": "Trilinear",
+        "8": "Color sequential linear"
+      }
+    },
+    "ShutterSpeedValue": {
+      "tag_id": 37377
+    },
+    "Software": {
+      "tag_id": 305
+    },
+    "WhiteBalance": {
+      "tag_id": 41987,
+      "value_to_human": {
+        "0": "Auto",
+        "1": "Manual"
+      }
+    },
+    "LensMake": {
+      "tag_id": 42035
+    },
+    "LensModel": {
+      "tag_id": 42036
+    },
+    "ISOSpeed": {
+      "tag_id": 34867
+    },
+    "Make": {
+      "tag_id": 271
+    },
+    "Model": {
+      "tag_id": 272
+    },
+    "DateTime": {
+      "tag_id": 306,
+      "syncable_to": [
+        "DateTimeOriginal",
+        "DateTimeDigitized"
+      ]
+    },
+    "DateTimeOriginal": {
+      "tag_id": 36867
+    },
+    "DateTimeDigitized": {
+      "tag_id": 36868
+    },
+    "OffsetTime": {
+      "tag_id": 36880,
+      "syncable_to": [
+        "OffsetTimeOriginal",
+        "OffsetTimeDigitized"
+      ]
+    },
+    "OffsetTimeOriginal": {
+      "tag_id": 36881
+    },
+    "OffsetTimeDigitized": {
+      "tag_id": 36882
+    },
+    "XResolution": {
+      "tag_id": 282
+    },
+    "YResolution": {
+      "tag_id": 283
+    }
+  }
+}
