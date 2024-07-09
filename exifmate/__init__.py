@@ -1,17 +1,19 @@
 import sys
-from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import Qt, QCoreApplication
+
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtQuickControls2 import QQuickStyle
+from PySide6.QtWidgets import QApplication
 
-# used in QML
-import bridge
+from exifmate import bridge
 
-if __name__ == "__main__":
+__all__ = ["bridge"]
+
+
+def main() -> None:
   app = QApplication(sys.argv)
 
   QQuickStyle.setStyle("macOS")
-  engine = QQmlApplicationEngine("src/view.qml")
+  engine = QQmlApplicationEngine("exifmate/view.qml")
 
   if not engine.rootObjects():
     sys.exit(1)

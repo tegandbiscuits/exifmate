@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "exifmate"
+version = "0.0.1"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+pyside6-essentials = "6.7.1"
+pillow = "^10.3.0"
+pillow-heif = "^0.16.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.1"
+pytest = "^8.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+exifmate = "exifmate:main"
+
+[tool.ruff]
+indent-width = 2
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "T201"]
