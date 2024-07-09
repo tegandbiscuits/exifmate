@@ -1,6 +1,7 @@
 from exifmate.metadata import Metadata, EDITABLE_METADATA
 from PIL.ExifTags import TAGS, IFD
 from PIL import Image
+import pytest
 import pdb;
 
 class TestEditableMetadata:
@@ -13,21 +14,25 @@ class TestEditableMetadata:
     
     assert assertion_count == len(EDITABLE_METADATA["exif"])
 
-def create_test_image(tmp_path, exif_data: dict) -> Image:
-  img = Image.new("1", [1, 1])
-  exif = img.getexif()
+@pytest.fixture
+def create_test_image(tmp_path):
+  def _create_test_image(exif_data: dict) -> Image:
+    img = Image.new("1", [1, 1])
+    exif = img.getexif()
 
-  for tag_name in exif_data:
-    tag_id = EDITABLE_METADATA["exif"][tag_name]["tag_id"]
-    exif[tag_id] = exif_data[tag_name]
+    for tag_name in exif_data:
+      tag_id = EDITABLE_METADATA["exif"][tag_name]["tag_id"]
+      exif[tag_id] = exif_data[tag_name]
 
-  out_path = tmp_path / "test.jpg"
-  img.save(out_path, exif=exif)
-  return Image.open(out_path)
+    out_path = tmp_path / "test.jpg"
+    img.save(out_path, exif=exif)
+    return Image.open(out_path)
+
+  return _create_test_image
 
 
 class TestMetadataRead:
-  def test_when_value_is_arbitrary(self, tmp_path):
-    test_image = create_test_image(tmp_path, { "Make": "Test Camera" })
+  def test_when_value_is_arbitrary(self, create_test_image):
+    test_image = create_test_image({ "Make": "Test Camera" })
     m = Metadata(test_image)
     assert m.read("Make") == "Test Camera", "returns raw value"
