@@ -15,8 +15,13 @@ class Metadata:
     # self.exif = incomplete_exif.get_ifd(IFD.Exif)
 
   def read(self, tag_name: str) -> str:
-    tag_id = EDITABLE_METADATA["exif"][tag_name]["tag_id"]
-    return self.exif.get(tag_id)
+    tag = EDITABLE_METADATA["exif"][tag_name]
+    base_value = self.exif.get(tag["tag_id"])
+
+    if "value_to_human" in tag:
+      return tag["value_to_human"].get(base_value) or base_value
+
+    return base_value
 
   # @staticmethod
   # def editable_metadata():

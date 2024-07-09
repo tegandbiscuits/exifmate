@@ -36,3 +36,11 @@ class TestMetadataRead:
     test_image = create_test_image({ "Make": "Test Camera" })
     m = Metadata(test_image)
     assert m.read("Make") == "Test Camera", "returns raw value"
+
+  # Returning unknown values as the original so it doesn't act destructive.
+  # TODO: the UI needs to make sure the unknown value is a selectable option
+  @pytest.mark.parametrize("wb_value,expected", [("1", "Manual"), ("123", "123")])
+  def test_when_values_are_predefined(self, create_test_image, wb_value, expected):
+    test_image = create_test_image({ "WhiteBalance": wb_value })
+    m = Metadata(test_image)
+    assert m.read("WhiteBalance") == expected
