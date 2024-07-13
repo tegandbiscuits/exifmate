@@ -55,3 +55,8 @@ class TestMetadataRead:
     test_image = create_test_image({ "WhiteBalance": wb_value })
     m = Metadata(test_image)
     assert m.read("WhiteBalance") == expected
+
+  def test_when_value_is_stored_in_bytes(self, create_test_image):
+    test_image = create_test_image({ "ExifVersion": { "in_ifd": True, "value": bytes("0232", "utf8") } })
+    m = Metadata(test_image)
+    assert m.read("ExifVersion") == "0232", "returns UTF-8 serialized"

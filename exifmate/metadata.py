@@ -22,6 +22,9 @@ class Metadata:
     if "value_to_human" in tag:
       return tag["value_to_human"].get(base_value) or base_value
 
+    if type(base_value) == bytes:
+      return base_value.decode("utf8")
+
     return base_value
 
   # @staticmethod
