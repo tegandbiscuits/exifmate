@@ -19,14 +19,19 @@ def create_test_image(tmp_path):
   def _create_test_image(exif_data: dict) -> Image:
     img = Image.new("1", [1, 1])
     exif = img.getexif()
+    # https://github.com/python-pillow/Pillow/issues/8229#issuecomment-2226731875
+    exif._ifds.setdefault(IFD.Exif, {})
 
     for tag_name in exif_data:
+      tag_value = exif_data[tag_name]
       tag_id = EDITABLE_METADATA["exif"][tag_name]["tag_id"]
-      exif[tag_id] = exif_data[tag_name]
 
-    out_path = tmp_path / "test.jpg"
-    img.save(out_path, exif=exif)
-    return Image.open(out_path)
+      if type(tag_value) == dict and tag_value.get("in_ifd"):
+        exif.get_ifd(IFD.Exif)[tag_id] = tag_value["value"]
+      else:
+        exif[tag_id] = tag_value
+
+    return img
 
   return _create_test_image
 
@@ -36,6 +41,12 @@ class TestMetadataRead:
     test_image = create_test_image({ "Make": "Test Camera" })
     m = Metadata(test_image)
     assert m.read("Make") == "Test Camera", "returns raw value"
+
+  def test_when_tag_is_in_an_ifd(self, create_test_image):
+    test_date = "2010:01:01 00:00:00" 
+    test_image = create_test_image({ "DateTimeOriginal": { "in_ifd": True, "value": test_date }})
+    m = Metadata(test_image)
+    assert m.read("DateTimeOriginal") == test_date, "still returns the value"
 
   # Returning unknown values as the original so it doesn't act destructive.
   # TODO: the UI needs to make sure the unknown value is a selectable option
