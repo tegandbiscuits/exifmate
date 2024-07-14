@@ -37,20 +37,24 @@ def create_test_image(tmp_path):
 
 
 class TestMetadataRead:
-  def test_when_value_is_arbitrary(self, create_test_image):
-    test_image = create_test_image({ "Make": "Test Camera" })
+  @pytest.mark.parametrize("make_value", ["Test Camera", None])
+  def test_when_value_is_arbitrary(self, create_test_image, make_value):
+    test_image = create_test_image({ "Make": make_value })
     m = Metadata(test_image)
-    assert m.read("Make") == "Test Camera", "returns raw value"
+    assert m.read("Make") == make_value, "returns raw value"
 
-  def test_when_tag_is_in_an_ifd(self, create_test_image):
-    test_date = "2010:01:01 00:00:00" 
-    test_image = create_test_image({ "DateTimeOriginal": { "in_ifd": True, "value": test_date }})
+  @pytest.mark.parametrize("dto_value", ["2010:01:01 00:00:00", None])
+  def test_when_tag_is_in_an_ifd(self, create_test_image, dto_value ):
+    test_image = create_test_image({ "DateTimeOriginal": { "in_ifd": True, "value": dto_value }})
     m = Metadata(test_image)
-    assert m.read("DateTimeOriginal") == test_date, "still returns the value"
+    assert m.read("DateTimeOriginal") == dto_value, "still returns the value"
 
   # Returning unknown values as the original so it doesn't act destructive.
   # TODO: the UI needs to make sure the unknown value is a selectable option
-  @pytest.mark.parametrize("wb_value,expected", [("1", "Manual"), ("123", "123")])
+  @pytest.mark.parametrize(
+    "wb_value,expected",
+    [("1", "Manual"), ("123", "123"), (None, None)]
+  )
   def test_when_values_are_predefined(self, create_test_image, wb_value, expected):
     test_image = create_test_image({ "WhiteBalance": wb_value })
     m = Metadata(test_image)
