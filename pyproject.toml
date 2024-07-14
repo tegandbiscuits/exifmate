@@ -25,4 +25,8 @@ indent-width = 2
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "T201"]
+ignore = ["D", "T201", "TD", "FIX002"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN201", "S101", "ANN001"]
+"tests/metadata_test.py" = ["SLF001"]
