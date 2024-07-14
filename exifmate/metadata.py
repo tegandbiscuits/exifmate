@@ -22,7 +22,7 @@ class Metadata:
       base_value = self.exif.get_ifd(IFD.Exif).get(tag["tag_id"])
 
     if "value_to_human" in tag:
-      return tag["value_to_human"].get(base_value) or base_value
+      return tag["value_to_human"].get(str(base_value)) or base_value
 
     if isinstance(base_value, bytes):
       return base_value.decode("utf8")

@@ -57,7 +57,7 @@ class TestMetadataRead:
   # TODO: the UI needs to make sure the unknown value is a selectable option
   @pytest.mark.parametrize(
     ("wb_value", "expected"),
-    [("1", "Manual"), ("123", "123"), (None, None)],
+    [("1", "Manual"), ("123", "123"), (None, None), (1, "Manual")],
   )
   def test_when_values_are_predefined(self, create_test_image, wb_value, expected):
     test_image = create_test_image({"WhiteBalance": wb_value})
