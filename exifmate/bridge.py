@@ -68,8 +68,3 @@ class Bridge(QObject):
         display_value = [int(byte) for byte in value]
 
       print(f"{tag_label:25}: {display_value}")
-
-
-p = "/Users/tegan/Downloads/IMG_8755.heif"
-b = Bridge()
-b.get_meta(p)

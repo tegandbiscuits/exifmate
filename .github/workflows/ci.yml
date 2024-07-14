@@ -1,0 +1,37 @@
+name: Python application
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install poetry
+      run: pipx install poetry
+    - uses: actions/setup-python@v5
+      with:
+        python-version-file: '.python-version'
+        cache: 'poetry'
+    - run: poetry install
+    - run: |
+        sudo apt update
+        sudo apt install libegl1
+    - name: Lint
+      run: |
+        echo "checking"
+        python --version
+        python3 --version
+        poetry run ruff check
+        poetry run ruff format --check
+    - name: Test
+      run: |
+        poetry run pytest
