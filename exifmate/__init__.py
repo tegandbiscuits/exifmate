@@ -13,7 +13,7 @@ def main() -> None:
   app = QApplication(sys.argv)
 
   QQuickStyle.setStyle("macOS")
-  engine = QQmlApplicationEngine("exifmate/view.qml")
+  engine = QQmlApplicationEngine("exifmate/ui/MainView.qml")
 
   if not engine.rootObjects():
     sys.exit(1)
