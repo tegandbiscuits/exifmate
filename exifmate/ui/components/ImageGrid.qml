@@ -3,7 +3,10 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 Item {
+  id: root
+
   property ListModel model: imageList.model
+  signal imageSelect(string imagePath)
 
   SystemPalette {
     id: pallette
@@ -28,7 +31,7 @@ Item {
 
     onCurrentIndexChanged: {
       const item = imageList.model.get(imageList.currentIndex);
-      console.log('Gonna activate', item.imagePath)
+      root.imageSelect(item.imagePath);
     }
 
     highlight: Rectangle {
