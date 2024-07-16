@@ -2,7 +2,7 @@ import pytest
 from PIL import Image
 from PIL.ExifTags import IFD, TAGS
 
-from exifmate.metadata import EDITABLE_METADATA, Metadata
+from exifmate.metadata import EDITABLE_METADATA, Metadata, SUPPORTED_FORMATS
 
 
 class TestEditableMetadata:
@@ -86,3 +86,11 @@ class TestMetadataReadAll:
     test_image_path = tmp_path / "test.jpg"
     with pytest.raises(FileNotFoundError):
       Metadata.read_all(test_image_path)
+
+class TestSupportedExtensions:
+  def test_includes_permutations_of_format_extensions(self):
+    extensions = Metadata.supported_extensions()
+    assert len(extensions) > len(SUPPORTED_FORMATS)
+    assert '.jpg' in extensions
+    assert '.jpeg' in extensions
+    assert '.bmp' not in extensions

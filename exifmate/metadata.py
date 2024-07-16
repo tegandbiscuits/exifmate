@@ -11,6 +11,7 @@ f = Path.open("./exifmate/editable_metadata.json")
 EDITABLE_METADATA = json.load(f)
 f.close()
 
+SUPPORTED_FORMATS = ["JPEG", "JPEG2000", "PNG", "TIFF", "HEIF"]
 
 class Metadata:
   def __init__(self, image: Image) -> None:
@@ -44,3 +45,8 @@ class Metadata:
 
     image.close()
     return { "exif": exif_values }
+
+  @staticmethod
+  def supported_extensions() -> list:
+    registered = Image.registered_extensions()
+    return [ext for ext in registered if registered[ext] in SUPPORTED_FORMATS] 
