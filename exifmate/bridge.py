@@ -1,14 +1,9 @@
-import json
 from pathlib import Path, PosixPath
 
-from PIL import Image
-from PIL.ExifTags import IFD
-from pillow_heif import register_heif_opener
 from PySide6.QtCore import QObject, Slot
 from PySide6.QtQml import QmlElement
 from exifmate.metadata import Metadata
 
-register_heif_opener()
 
 QML_IMPORT_NAME = "exifmate"
 QML_IMPORT_MAJOR_VERSION = 1

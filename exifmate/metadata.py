@@ -1,8 +1,11 @@
 import json
 from pathlib import Path
+from pillow_heif import register_heif_opener
 
 from PIL import Image
 from PIL.ExifTags import IFD
+
+register_heif_opener()
 
 f = Path.open("./exifmate/editable_metadata.json")
 EDITABLE_METADATA = json.load(f)
