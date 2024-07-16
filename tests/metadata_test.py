@@ -1,9 +1,9 @@
 import pytest
 from PIL import Image
-from PIL.TiffImagePlugin import IFDRational
 from PIL.ExifTags import IFD, TAGS
+from PIL.TiffImagePlugin import IFDRational
 
-from exifmate.metadata import EDITABLE_METADATA, Metadata, SUPPORTED_FORMATS
+from exifmate.metadata import EDITABLE_METADATA, SUPPORTED_FORMATS, Metadata
 
 
 class TestEditableMetadata:
@@ -51,7 +51,11 @@ class TestMetadataRead:
 
   @pytest.mark.parametrize(
     ("dto", "expected"),
-    [("2010:01:01 00:00:00", "2010:01:01 00:00:00"), (None, None), (IFDRational(0.5), "0.5")],
+    [
+      ("2010:01:01 00:00:00", "2010:01:01 00:00:00"),
+      (None, None),
+      (IFDRational(0.5), "0.5"),
+    ],
   )
   def test_when_tag_is_in_an_ifd(self, create_test_image, dto, expected):
     test_image = create_test_image(
@@ -78,6 +82,7 @@ class TestMetadataRead:
     m = Metadata(test_image)
     assert m.read("ExifVersion") == "0232", "returns UTF-8 serialized"
 
+
 class TestMetadataReadAll:
   def test_opens_and_returns_all_the_exif_data(self, create_test_image, tmp_path):
     test_image = create_test_image({})
@@ -94,10 +99,11 @@ class TestMetadataReadAll:
     with pytest.raises(FileNotFoundError):
       Metadata.read_all(test_image_path)
 
+
 class TestSupportedExtensions:
   def test_includes_permutations_of_format_extensions(self):
     extensions = Metadata.supported_extensions()
     assert len(extensions) > len(SUPPORTED_FORMATS)
-    assert '.jpg' in extensions
-    assert '.jpeg' in extensions
-    assert '.bmp' not in extensions
+    assert ".jpg" in extensions
+    assert ".jpeg" in extensions
+    assert ".bmp" not in extensions

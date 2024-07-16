@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
-from pillow_heif import register_heif_opener
 
 from PIL import Image
 from PIL.ExifTags import IFD
+from pillow_heif import register_heif_opener
 
 register_heif_opener()
 
@@ -12,6 +12,7 @@ EDITABLE_METADATA = json.load(f)
 f.close()
 
 SUPPORTED_FORMATS = ["JPEG", "JPEG2000", "PNG", "TIFF", "HEIF"]
+
 
 class Metadata:
   def __init__(self, image: Image) -> None:
@@ -31,10 +32,7 @@ class Metadata:
     if isinstance(base_value, bytes):
       return base_value.decode("utf8")
 
-    if base_value is not None:
-      return str(base_value)
-    else:
-      return None
+    return base_value if base_value is None else str(base_value)
 
   @staticmethod
   def read_all(image_path: str) -> dict:
@@ -47,9 +45,9 @@ class Metadata:
     ]
 
     image.close()
-    return { "exif": exif_values }
+    return {"exif": exif_values}
 
   @staticmethod
   def supported_extensions() -> list:
     registered = Image.registered_extensions()
-    return [ext for ext in registered if registered[ext] in SUPPORTED_FORMATS] 
+    return [ext for ext in registered if registered[ext] in SUPPORTED_FORMATS]
