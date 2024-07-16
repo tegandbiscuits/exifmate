@@ -28,3 +28,16 @@ class Metadata:
       return base_value.decode("utf8")
 
     return base_value
+
+  @staticmethod
+  def read_all(image_path: str) -> dict:
+    image = Image.open(image_path)
+    md_reader = Metadata(image)
+
+    exif_values = [
+      {"key": tag_name, "value": (md_reader.read(tag_name) or "")}
+      for tag_name in EDITABLE_METADATA["exif"]
+    ]
+
+    image.close()
+    return { "exif": exif_values }

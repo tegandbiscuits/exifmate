@@ -70,3 +70,19 @@ class TestMetadataRead:
     )
     m = Metadata(test_image)
     assert m.read("ExifVersion") == "0232", "returns UTF-8 serialized"
+
+class TestMetadataReadAll:
+  def test_opens_and_returns_all_the_exif_data(self, create_test_image, tmp_path):
+    test_image = create_test_image({})
+    test_image_path = tmp_path / "test.jpg"
+    test_image.save(test_image_path)
+
+    all_data = Metadata.read_all(test_image_path)
+    assert len(all_data["exif"]) == len(EDITABLE_METADATA["exif"])
+    assert all(d["key"] in EDITABLE_METADATA["exif"] for d in all_data["exif"])
+    assert all(isinstance(d["value"], str) for d in all_data["exif"])
+
+  def test_when_file_does_not_exist(self, tmp_path):
+    test_image_path = tmp_path / "test.jpg"
+    with pytest.raises(FileNotFoundError):
+      Metadata.read_all(test_image_path)
