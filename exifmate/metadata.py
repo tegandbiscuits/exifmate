@@ -31,7 +31,10 @@ class Metadata:
     if isinstance(base_value, bytes):
       return base_value.decode("utf8")
 
-    return base_value
+    if base_value is not None:
+      return str(base_value)
+    else:
+      return None
 
   @staticmethod
   def read_all(image_path: str) -> dict:
