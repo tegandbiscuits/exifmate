@@ -28,9 +28,17 @@ const useStyles = makeStyles({
   }
 });
 
+interface DirectoryInfo {
+  directory: string;
+  imageList: {
+    filename: string;
+    url: string;
+  }[];
+}
+
 function App() {
   const styles = useStyles();
-  const [imageList, setImageList] = useState<string[]>([]);
+  const [imageList, setImageList] = useState<DirectoryInfo | null>(null);
   
   useEffect(() => {
     // @ts-expect-error electron bits
@@ -45,13 +53,17 @@ function App() {
         <Title1>Images</Title1>
 
         <div className={styles.imageGrid}>
-          {imageList.map((path) => (
-            <Image
-              key={path}
-              src={path}
-              fit="contain"
-              className={styles.image}
-            />
+          {imageList?.imageList.map((image) => (
+            <div>
+              <Image
+                key={image.filename}
+                src={image.url}
+                fit="contain"
+                className={styles.image}
+                alt={image.filename}
+              />
+              <div>{image.filename}</div>
+            </div>
           ))}
         </div>
       </div>

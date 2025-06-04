@@ -12,6 +12,41 @@ const url = require('node:url');
 
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg'];
 
+async function getImages() {
+  const { filePaths, canceled } = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  });
+
+  if (canceled) {
+    return;
+  }
+  
+  const directory = filePaths[0]
+
+  const files = await fs.readdir(directory);
+  const imageList = files.reduce((prev, filename) => {
+    const ext = path.extname(filename).toLowerCase();
+
+    if (IMAGE_EXTENSIONS.includes(ext)) {
+      const url = new URL('exifmate://');
+      url.pathname = path.join(directory, filename);
+
+      return prev.concat({
+        filename,
+        url: url.toString(),
+      });
+    }
+
+    return prev;
+  }, []);
+  
+  return {
+    directory,
+    imageList,
+  };
+}
+
+
 protocol.registerSchemesAsPrivileged([
   { scheme: 'exifmate', privileges: { bypassCSP: true } },
 ]);
@@ -26,30 +61,9 @@ function createWindow() {
   });
   
   const openDirectory = async () => {
-    const { filePaths, canceled } = await dialog.showOpenDialog({
-      properties: ['openDirectory'],
-    });
-
-    if (canceled) {
-      return;
-    }
-    
-    const files = await fs.readdir(filePaths[0]);
-    const imagePaths = files.reduce((prev, filename) => {
-      const ext = path.extname(filename).toLowerCase();
-
-      if (IMAGE_EXTENSIONS.includes(ext)) {
-        const url = new URL('exifmate://');
-        url.pathname = path.join(filePaths[0], filename);
-        return prev.concat(url.toString());
-        // return prev.concat(`exifmate://${path.join(filePaths[0], filename)}`);
-      }
-      
-      return prev;
-    }, []);
-
-    win.webContents.send('open-directory', imagePaths);
-  }
+    const info = await getImages();
+    win.webContents.send('open-directory', info);
+  };
 
   const menu = Menu.buildFromTemplate([
     {
