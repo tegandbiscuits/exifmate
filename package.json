@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:app": "electron electron.cjs",
+    "dev:app": "electron app/main.cjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
