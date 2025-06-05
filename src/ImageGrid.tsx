@@ -7,6 +7,7 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
+import type { DirectoryInfo, ElectronAPI } from './preload';
 import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles({
@@ -21,6 +22,12 @@ const useStyles = makeStyles({
     width: '200px',
   },
 });
+
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI
+  }
+}
 
 const useGridSelection = (items: string[]) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -64,14 +71,6 @@ const useGridSelection = (items: string[]) => {
   };
 };
 
-interface DirectoryInfo {
-  directory: string;
-  imageList: {
-    filename: string;
-    url: string;
-  }[];
-}
-
 const ImageGrid = () => {
   const [info, setInfo] = useState<DirectoryInfo | null>(null)
   const {
@@ -81,7 +80,6 @@ const ImageGrid = () => {
   const styles = useStyles();
   
   useEffect(() => {
-    // @ts-expect-error electron bits
     window.electronAPI.onOpenDirectory((newInfo) => {
       setInfo(newInfo);
     });
