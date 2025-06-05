@@ -3,38 +3,36 @@ import {
   CardHeader,
   CardPreview,
   Image,
-  makeStyles,
   Text,
+  makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
 const useStyles = makeStyles({
   grid: {
     display: 'flex',
     flexWrap: 'wrap',
-    userSelect: 'none',
     gap: tokens.spacingHorizontalM,
+    userSelect: 'none',
   },
   image: {
-    width: '200px',
     height: '200px',
+    width: '200px',
   },
 });
 
 const useGridSelection = (items: string[]) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [anchorItem, setAnchorItem] = useState<string | null>(null);
-  const handleClick = (e: React.MouseEvent, id: string) => {
-    const isMultiSelect = e.metaKey || e.ctrlKey;
-    const isRangeSelect = e.shiftKey && anchorItem !== null;
+
+  const handleClick = (event: MouseEvent, id: string) => {
+    const isMultiSelect = event.metaKey || event.ctrlKey;
+    const isRangeSelect = event.shiftKey && anchorItem !== null;
     
     if (isRangeSelect) {
-      let startIndex = items.findIndex((i) => i === anchorItem);
-      let endIndex = items.findIndex((i) => i === id);
+      let startIndex = items.findIndex((item) => item === anchorItem);
+      let endIndex = items.findIndex((item) => item === id);
 
       if (startIndex > endIndex) {
         const prevStart = startIndex
@@ -42,7 +40,8 @@ const useGridSelection = (items: string[]) => {
         endIndex = prevStart;
       }
 
-      setSelectedItems(items.slice(startIndex, endIndex + 1));
+      const END_OFFSET = 1
+      setSelectedItems(items.slice(startIndex, endIndex + END_OFFSET));
     } else if (isMultiSelect) {
       setSelectedItems((prev) => {
         if (prev.includes(id)) {
@@ -60,8 +59,8 @@ const useGridSelection = (items: string[]) => {
   };
 
   return {
-    selectedItems,
     handleClick,
+    selectedItems,
   };
 };
 
@@ -73,12 +72,12 @@ interface DirectoryInfo {
   }[];
 }
 
-function ImageGrid() {
-  const [info, setInfo] = useState<DirectoryInfo | null>(null);
+const ImageGrid = () => {
+  const [info, setInfo] = useState<DirectoryInfo | null>(null)
   const {
     selectedItems,
     handleClick,
-  } = useGridSelection(info?.imageList.map(i => i.filename) ?? []);
+  } = useGridSelection(info?.imageList.map(img => img.filename) ?? []);
   const styles = useStyles();
   
   useEffect(() => {
@@ -96,7 +95,7 @@ function ImageGrid() {
         <Card
           key={image.filename}
           selected={selectedItems.includes(image.filename)}
-          onSelectionChange={(e) => handleClick(e, image.filename)}
+          onSelectionChange={(event: MouseEvent) => handleClick(event, image.filename)}
         >
           <CardPreview className={styles.image}>
             <Image

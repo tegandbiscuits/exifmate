@@ -1,25 +1,25 @@
-import { makeStyles, Title1, tokens } from '@fluentui/react-components';
+import { Title1, makeStyles, tokens } from '@fluentui/react-components';
 import ImageGrid from './ImageGrid';
 
 const useStyles = makeStyles({
+  editor: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    padding: tokens.spacingHorizontalL,
+  },
+  imageSelection: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    overflowY: 'scroll',
+    padding: tokens.spacingHorizontalL,
+    width: '60vw',
+  },
   root: {
     display: 'flex',
     maxHeight: '100vh',
     overflow: 'clip',
   },
-  imageSelection: {
-    backgroundColor: tokens.colorNeutralBackground2,
-    width: '60vw',
-    overflowY: 'scroll',
-    padding: tokens.spacingHorizontalL,
-  },
-  editor: {
-    backgroundColor: tokens.colorNeutralBackground1,
-    padding: tokens.spacingHorizontalL,
-  }
 });
 
-function App() {
+const App = () => {
   const styles = useStyles();
 
   return (

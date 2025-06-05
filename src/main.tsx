@@ -1,9 +1,14 @@
+import { FluentProvider, webLightTheme } from '@fluentui/react-components'
+import App from './App.tsx'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import { FluentProvider, webLightTheme } from '@fluentui/react-components'
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root');
+if (!root) {
+  throw new Error('Failed to mount react');
+}
+
+createRoot(root).render(
   <StrictMode>
     <FluentProvider theme={webLightTheme}>
       <App />
