@@ -1,5 +1,5 @@
-import { Image, makeStyles, Title1, tokens } from '@fluentui/react-components';
-import { useEffect, useState } from 'react'
+import { makeStyles, Title1, tokens } from '@fluentui/react-components';
+import ImageGrid from './ImageGrid';
 
 const useStyles = makeStyles({
   root: {
@@ -13,59 +13,21 @@ const useStyles = makeStyles({
     overflowY: 'scroll',
     padding: tokens.spacingHorizontalL,
   },
-  imageGrid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: tokens.spacingHorizontalM,
-  },
-  image: {
-    width: '200px',
-    height: '200px',
-  },
   editor: {
     backgroundColor: tokens.colorNeutralBackground1,
     padding: tokens.spacingHorizontalL,
   }
 });
 
-interface DirectoryInfo {
-  directory: string;
-  imageList: {
-    filename: string;
-    url: string;
-  }[];
-}
-
 function App() {
   const styles = useStyles();
-  const [imageList, setImageList] = useState<DirectoryInfo | null>(null);
-  
-  useEffect(() => {
-    // @ts-expect-error electron bits
-    window.electronAPI.onOpenDirectory((imagePaths) => {
-      setImageList(imagePaths);
-    });
-  }, []);
 
   return (
     <div className={styles.root}>
       <div className={styles.imageSelection}>
         <Title1>Images</Title1>
 
-        <div className={styles.imageGrid}>
-          {imageList?.imageList.map((image) => (
-            <div>
-              <Image
-                key={image.filename}
-                src={image.url}
-                fit="contain"
-                className={styles.image}
-                alt={image.filename}
-              />
-              <div>{image.filename}</div>
-            </div>
-          ))}
-        </div>
+        <ImageGrid />
       </div>
 
       <div className={styles.editor}>
