@@ -30,11 +30,9 @@ const App = () => {
         <ImageGrid />
       </div>
 
-      <div className={styles.editor}>
-        Metadata goes here
-      </div>
+      <div className={styles.editor}>Metadata goes here</div>
     </div>
   );
-}
+};
 
-export default App
+export default App;
