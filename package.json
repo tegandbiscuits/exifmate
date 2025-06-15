@@ -12,11 +12,14 @@
   },
   "dependencies": {
     "@fluentui/react-components": "^9.64.0",
+    "@fluentui/react-icons": "^2.0.302",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-dialog": "~2",
+    "@tauri-apps/plugin-fs": "~2",
     "@tauri-apps/plugin-opener": "^2.2.7",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-resizable-panels": "^3.0.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

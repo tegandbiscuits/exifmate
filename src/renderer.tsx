@@ -2,6 +2,7 @@ import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { createAppMenu } from './app-menu';
 
 const root = document.getElementById('root');
 if (!root) {
@@ -15,3 +16,5 @@ createRoot(root).render(
     </FluentProvider>
   </StrictMode>,
 );
+
+createAppMenu();
