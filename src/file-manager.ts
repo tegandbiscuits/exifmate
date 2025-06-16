@@ -3,6 +3,7 @@ import { emit } from '@tauri-apps/api/event';
 import { basename } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { type } from '@tauri-apps/plugin-os';
+import { isMobile } from './util';
 
 // const SUPPORTED_TYPES = /jpe?g$/i;
 
@@ -18,7 +19,7 @@ export async function findImages() {
   }
   
   const images: ImageInfo[] = await Promise.all(paths.map(async (path) => {
-    const filePath = type() === 'ios' ? new URL(path).pathname : path;
+    const filePath = isMobile() ? new URL(path).pathname : path;
   
     return {
       assetUrl: convertFileSrc(filePath),
