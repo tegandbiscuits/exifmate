@@ -12,8 +12,9 @@ import {
 } from '@fluentui/react-components';
 import { ImageEditRegular } from '@fluentui/react-icons';
 import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ImageInfo } from './file-manager';
+import { readMetadata, updateMetadata } from './metadata-handler';
 
 const useStyles = makeStyles({
   container: {
@@ -60,24 +61,42 @@ function MetadataEditor({ image }: Props) {
     'idle' | 'loading' | 'errored'
   >('idle');
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  
+  const [exif, setExif] = useState<any>({});
 
-  // useEffect(() => {
-  //   setLoadingStatus('loading');
+  useEffect(() => {
+    if (!image) {
+      return;
+    }
 
-  //   if (!image) {
-  //     return;
-  //   }
+    setLoadingStatus('loading');
 
-  //   invoke('read_exif', { path: image.path })
-  //     .then((res) => {
-  //       console.log('res', res);
-  //       setLoadingStatus('idle');
-  //     })
-  //     .catch((err) => {
-  //       console.error('Failed to load metadata', err);
-  //       setLoadingStatus('errored');
-  //     });
-  // }, [image]);
+    readMetadata(image.filename, image.path)
+      .then((res) => {
+        setLoadingStatus('idle');
+        setExif(res);
+      })
+      .catch((err) => {
+        setLoadingStatus('errored');
+      });
+  }, [image]);
+  
+  const saveMetadata = useCallback(() => {
+    if (!image) {
+      return;
+    }
+
+    console.log('starting save');
+
+    setIsEditing(false);
+    updateMetadata(image.filename, image.path, { DateTimeOriginal: exif.DateTimeOriginal })
+      .then(() => {
+        console.log('yayyy! :D');
+      })
+      .catch((err) => {
+        console.error('oh no :(', err);
+      });
+  }, [image, exif]);
 
   if (!image) {
     return (
@@ -111,7 +130,16 @@ function MetadataEditor({ image }: Props) {
       ) : (
         <div className={styles.editor}>
           <Field label="Date/Time Original">
-            <Input disabled={!isEditing} />
+            <Input
+              disabled={!isEditing}
+              value={exif.DateTimeOriginal}
+              onChange={(e) => {
+                setExif((prev: any) => ({
+                  ...prev,
+                  DateTimeOriginal: e.target.value,
+                }));
+              }}
+            />
           </Field>
         </div>
       )}
@@ -130,7 +158,9 @@ function MetadataEditor({ image }: Props) {
             <ToolbarButton onClick={() => setIsEditing(false)}>
               Cancel
             </ToolbarButton>
-            <ToolbarButton appearance="primary">Save</ToolbarButton>
+            <ToolbarButton appearance="primary" onClick={() => saveMetadata()}>
+              Save
+            </ToolbarButton>
           </>
         )}
       </Toolbar>

@@ -10,6 +10,7 @@
     "opener:default",
     "dialog:default",
     "fs:default",
-    "os:default"
+    "os:default",
+    "fs:allow-document-write"
   ]
 }

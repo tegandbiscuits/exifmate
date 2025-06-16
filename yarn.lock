@@ -1922,6 +1922,11 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.17.0"
 
+"@vshirole/exiftool@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vshirole/exiftool/-/exiftool-1.0.0.tgz#a912ccfbde71adc72ea1a39523ccac69bd6350eb"
+  integrity sha512-MS4FINsjyvaUdK4iAzyRGVIXwHOPpPUQfvrEy4WrpLKcbyrszL2DTkAYT9pcpLv+rL75IfUnBhTYCdvKy87buw==
+
 acorn-walk@^8.1.1:
   version "8.3.4"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.3.4.tgz#794dd169c3977edf4ba4ea47583587c5866236b7"
