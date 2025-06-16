@@ -2,18 +2,18 @@ import {
   Caption1,
   Field,
   Input,
-  makeStyles,
   MessageBar,
   Spinner,
   Subtitle1,
-  tokens,
   Toolbar,
   ToolbarButton,
+  makeStyles,
+  tokens,
 } from '@fluentui/react-components';
+import { ImageEditRegular } from '@fluentui/react-icons';
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
-import { ImageEditRegular } from '@fluentui/react-icons';
-import { ImageInfo } from './file-manager';
+import type { ImageInfo } from './file-manager';
 
 const useStyles = makeStyles({
   container: {
@@ -56,7 +56,9 @@ interface Props {
 
 function MetadataEditor({ image }: Props) {
   const styles = useStyles();
-  const [loadingStatus, setLoadingStatus] = useState<'idle' | 'loading' | 'errored'>('idle');
+  const [loadingStatus, setLoadingStatus] = useState<
+    'idle' | 'loading' | 'errored'
+  >('idle');
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   // useEffect(() => {
@@ -76,7 +78,7 @@ function MetadataEditor({ image }: Props) {
   //       setLoadingStatus('errored');
   //     });
   // }, [image]);
-  
+
   if (!image) {
     return (
       <div className={styles.container}>

@@ -1,20 +1,30 @@
-import { Title1, makeStyles, tokens } from '@fluentui/react-components';
+import {
+  Title1,
+  Toolbar,
+  ToolbarButton,
+  makeStyles,
+  tokens,
+} from '@fluentui/react-components';
+import { Add16Filled } from '@fluentui/react-icons/fonts';
+import { useState } from 'react';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import ImageGrid from './ImageGrid';
 import MetadataEditor from './MetadataEditor';
-import { useState } from 'react';
-import type { ImageInfo } from './file-manager';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { type ImageInfo, findImages } from './file-manager';
 
 const useStyles = makeStyles({
   titlebar: {
-    marginBottom: tokens.spacingVerticalL,
+    backgroundColor: tokens.colorNeutralBackground3,
+    justifyContent: 'space-between',
   },
   imageSelection: {
     backgroundColor: tokens.colorNeutralBackground2,
-    padding: tokens.spacingHorizontalL,
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
   },
   root: {
-    height: '100vh',
+    display: 'flex',
   },
 });
 
@@ -24,26 +34,31 @@ const App = () => {
   const styles = useStyles();
 
   return (
-    <div className={styles.root}>
-      <PanelGroup direction="horizontal">
-        <Panel className={styles.imageSelection} defaultSize={65} style={{ overflow: 'scroll' }}>
-          <div className={styles.titlebar}>
-            <Title1>Images</Title1>
-          </div>
+    <PanelGroup direction="horizontal" className={styles.root}>
+      <Panel className={styles.imageSelection} defaultSize={65}>
+        <Toolbar className={styles.titlebar}>
+          <Title1>Images</Title1>
 
-          <ImageGrid
-            selectedImage={selectedImage}
-            onImageSelected={setSelectedImage}
+          <ToolbarButton
+            title="Add Images"
+            appearance="primary"
+            icon={<Add16Filled />}
+            onClick={() => findImages()}
           />
-        </Panel>
-        
-        <PanelResizeHandle />
+        </Toolbar>
 
-        <Panel defaultSize={35}>
-          <MetadataEditor image={selectedImage} />
-        </Panel>
-      </PanelGroup>
-    </div>
+        <ImageGrid
+          selectedImage={selectedImage}
+          onImageSelected={setSelectedImage}
+        />
+      </Panel>
+
+      <PanelResizeHandle />
+
+      <Panel defaultSize={35}>
+        <MetadataEditor image={selectedImage} />
+      </Panel>
+    </PanelGroup>
   );
 };
 

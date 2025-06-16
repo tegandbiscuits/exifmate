@@ -3,6 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { createAppMenu } from './app-menu';
+import { isMobile } from './util';
 
 const root = document.getElementById('root');
 if (!root) {
@@ -17,4 +18,6 @@ createRoot(root).render(
   </StrictMode>,
 );
 
-createAppMenu();
+if (!isMobile()) {
+  createAppMenu();
+}

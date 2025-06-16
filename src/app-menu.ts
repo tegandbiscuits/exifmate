@@ -1,5 +1,5 @@
-import { Menu, PredefinedMenuItem, Submenu } from "@tauri-apps/api/menu";
-import { findImages } from "./file-manager";
+import { Menu, PredefinedMenuItem, Submenu } from '@tauri-apps/api/menu';
+import { findImages } from './file-manager';
 
 export async function createAppMenu() {
   const appMenu = await Submenu.new({
@@ -12,7 +12,7 @@ export async function createAppMenu() {
       await PredefinedMenuItem.new({ item: 'Quit' }),
     ],
   });
-  
+
   const fileMenu = await Submenu.new({
     text: 'File',
     items: [
@@ -25,13 +25,10 @@ export async function createAppMenu() {
       },
     ],
   });
-  
+
   const menu = await Menu.new({
-    items: [
-      appMenu,
-      fileMenu,
-    ],
+    items: [appMenu, fileMenu],
   });
-  
+
   menu.setAsAppMenu();
 }
