@@ -23,6 +23,9 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
   },
+  editor: {
+    height: '100vh',
+  },
   root: {
     display: 'flex',
   },
@@ -55,7 +58,7 @@ const App = () => {
 
       <PanelResizeHandle />
 
-      <Panel defaultSize={35}>
+      <Panel className={styles.editor} defaultSize={35}>
         <MetadataEditor image={selectedImage} />
       </Panel>
     </PanelGroup>

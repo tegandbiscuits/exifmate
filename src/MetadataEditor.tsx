@@ -11,10 +11,15 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { ImageEditRegular } from '@fluentui/react-icons';
-import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useEffect, useState } from 'react';
+import MapField from './MapField';
 import type { ImageInfo } from './file-manager';
-import { readMetadata, updateMetadata } from './metadata-handler';
+import {
+  type ExifData,
+  exifData,
+  readMetadata,
+  updateMetadata,
+} from './metadata-handler';
 
 const useStyles = makeStyles({
   container: {
@@ -40,9 +45,16 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     gap: tokens.spacingVerticalM,
   },
-  editor: {
+  formFields: {
     padding: tokens.spacingHorizontalL,
+    overflow: 'scroll',
+  },
+  editForm: {
     flexGrow: '1',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    overflow: 'clip',
   },
   toolbar: {
     justifyContent: 'space-between',
@@ -61,8 +73,8 @@ function MetadataEditor({ image }: Props) {
     'idle' | 'loading' | 'errored'
   >('idle');
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  
-  const [exif, setExif] = useState<any>({});
+
+  const [exif, setExif] = useState<ExifData | null>(null);
 
   useEffect(() => {
     if (!image) {
@@ -76,20 +88,20 @@ function MetadataEditor({ image }: Props) {
         setLoadingStatus('idle');
         setExif(res);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoadingStatus('errored');
       });
   }, [image]);
-  
+
   const saveMetadata = useCallback(() => {
-    if (!image) {
+    if (!image || !exif) {
       return;
     }
 
     console.log('starting save');
 
     setIsEditing(false);
-    updateMetadata(image.filename, image.path, { DateTimeOriginal: exif.DateTimeOriginal })
+    updateMetadata(image.filename, image.path, exif)
       .then(() => {
         console.log('yayyy! :D');
       })
@@ -114,56 +126,98 @@ function MetadataEditor({ image }: Props) {
         <Subtitle1>{image.filename}</Subtitle1>
       </div>
 
-      {loadingStatus !== 'idle' ? (
+      {loadingStatus === 'loading' && (
         <div className={styles.centered}>
-          {loadingStatus === 'loading' && (
-            <div className={styles.loader}>
-              <Spinner />
-              <Caption1>Loading Metadata...</Caption1>
-            </div>
-          )}
-
-          {loadingStatus === 'errored' && (
-            <MessageBar intent="error">Error Loading Metadata</MessageBar>
-          )}
-        </div>
-      ) : (
-        <div className={styles.editor}>
-          <Field label="Date/Time Original">
-            <Input
-              disabled={!isEditing}
-              value={exif.DateTimeOriginal}
-              onChange={(e) => {
-                setExif((prev: any) => ({
-                  ...prev,
-                  DateTimeOriginal: e.target.value,
-                }));
-              }}
-            />
-          </Field>
+          <div className={styles.loader}>
+            <Spinner />
+            <Caption1>Loading Metadata...</Caption1>
+          </div>
         </div>
       )}
 
-      <Toolbar className={styles.toolbar}>
-        {!isEditing && (
-          <ToolbarButton
-            aria-description="Edit"
-            icon={<ImageEditRegular />}
-            onClick={() => setIsEditing(true)}
-          />
-        )}
+      {loadingStatus === 'errored' && (
+        <div className={styles.centered}>
+          <MessageBar intent="error">Error Loading Metadata</MessageBar>
+        </div>
+      )}
 
-        {isEditing && (
-          <>
-            <ToolbarButton onClick={() => setIsEditing(false)}>
-              Cancel
-            </ToolbarButton>
-            <ToolbarButton appearance="primary" onClick={() => saveMetadata()}>
-              Save
-            </ToolbarButton>
-          </>
-        )}
-      </Toolbar>
+      {loadingStatus === 'idle' && exif !== null && (
+        <form
+          className={styles.editForm}
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveMetadata();
+          }}
+        >
+          <div className={styles.formFields}>
+            <MapField
+              latitude={exif.GPSLatitude}
+              longitude={exif.GPSLongitude}
+              disabled={!isEditing}
+              onPositionChange={([lat, lon]) => {
+                setExif((prev) => {
+                  if (!prev) return null;
+
+                  return {
+                    ...prev,
+                    GPSLatitude: lat,
+                    GPSLongitude: lon,
+                  };
+                });
+              }}
+            />
+
+            {exifData.keyof().options.map((tagName) => (
+              <Field
+                key={tagName}
+                label={tagName}
+                hint={exifData.shape[tagName].meta()?.realTag}
+              >
+                <Input
+                  disabled={!isEditing}
+                  value={String(exif[tagName])}
+                  onChange={(e) => {
+                    setExif((prev) => {
+                      if (prev !== null) {
+                        return {
+                          ...prev,
+                          [tagName]: e.target.value,
+                        };
+                      }
+                      return null;
+                    });
+                  }}
+                />
+              </Field>
+            ))}
+          </div>
+
+          <Toolbar className={styles.toolbar}>
+            {!isEditing && (
+              <ToolbarButton
+                type="button"
+                aria-description="Edit"
+                icon={<ImageEditRegular />}
+                onClick={() => setIsEditing(true)}
+              />
+            )}
+
+            {isEditing && (
+              <>
+                <ToolbarButton
+                  onClick={() => setIsEditing(false)}
+                  type="button"
+                >
+                  Cancel
+                </ToolbarButton>
+                <ToolbarButton type="submit" appearance="primary">
+                  Save
+                </ToolbarButton>
+              </>
+            )}
+          </Toolbar>
+        </form>
+      )}
     </div>
   );
 }
