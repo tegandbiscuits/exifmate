@@ -1,59 +1,49 @@
-import {
-  Title1,
-  Toolbar,
-  ToolbarButton,
-  makeStyles,
-  tokens,
-} from '@fluentui/react-components';
-import { Add16Filled } from '@fluentui/react-icons/fonts';
+import { ActionIcon, Box, Flex, Title } from '@mantine/core';
+import { IconPhotoPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import ImageGrid from './ImageGrid';
+// @ts-expect-error
+import styles from './App.module.css';
 import MetadataEditor from './Editor/MetadataEditor';
+import ImageGrid from './ImageGrid';
 import { type ImageInfo, findImages } from './core/file-manager';
-
-const useStyles = makeStyles({
-  titlebar: {
-    backgroundColor: tokens.colorNeutralBackground3,
-    justifyContent: 'space-between',
-  },
-  imageSelection: {
-    backgroundColor: tokens.colorNeutralBackground2,
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  editor: {
-    height: '100vh',
-  },
-  root: {
-    display: 'flex',
-  },
-});
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState<ImageInfo | undefined>();
 
-  const styles = useStyles();
-
   return (
     <PanelGroup direction="horizontal" className={styles.root}>
       <Panel className={styles.imageSelection} defaultSize={65}>
-        <Toolbar className={styles.titlebar}>
-          <Title1>Images</Title1>
+        <Flex
+          direction="row"
+          align="center"
+          justify="space-between"
+          style={(t) => ({
+            paddingTop: t.spacing.xs,
+            paddingBottom: t.spacing.xs,
+            paddingLeft: t.spacing.md,
+            paddingRight: t.spacing.md,
+          })}
+        >
+          <Title order={1}>Images</Title>
 
-          <ToolbarButton
+          <ActionIcon
+            type="button"
+            variant="filled"
+            size="lg"
             title="Add Images"
-            appearance="primary"
-            icon={<Add16Filled />}
             onClick={() => findImages()}
-          />
-        </Toolbar>
+          >
+            <IconPhotoPlus />
+          </ActionIcon>
+        </Flex>
 
-        <ImageGrid
-          selectedImage={selectedImage}
-          onImageSelected={setSelectedImage}
-        />
+        <Box h="100%" p="lg" bg="gray.0" style={{ overflow: 'auto' }}>
+          <ImageGrid
+            selectedImage={selectedImage}
+            onImageSelected={setSelectedImage}
+          />
+        </Box>
       </Panel>
 
       <PanelResizeHandle />

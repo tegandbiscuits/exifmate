@@ -24,7 +24,7 @@ function useExif(image?: ImageInfo) {
         setLoadingStatus('errored');
       });
   }, [image]);
-  
+
   return {
     loadingStatus,
     exif,

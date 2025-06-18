@@ -1,42 +1,7 @@
-import {
-  Card,
-  CardHeader,
-  CardPreview,
-  Image,
-  Subtitle1,
-  Text,
-  makeStyles,
-  mergeClasses,
-  tokens,
-} from '@fluentui/react-components';
+import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
 import { type UnlistenFn, listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from 'react';
 import type { ImageInfo } from './core/file-manager';
-
-const useStyles = makeStyles({
-  container: {
-    backgroundColor: tokens.colorNeutralBackground2,
-    padding: tokens.spacingHorizontalL,
-    overflow: 'auto',
-  },
-  empty: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: tokens.colorNeutralForeground4,
-    height: '100%',
-  },
-  grid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: tokens.spacingHorizontalM,
-    userSelect: 'none',
-  },
-  image: {
-    height: '200px',
-    width: '200px',
-  },
-});
 
 // const useGridSelection = (items: string[]) => {
 //   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -92,7 +57,6 @@ interface Props {
  */
 const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
   const [images, setImages] = useState<ImageInfo[]>([]);
-  const styles = useStyles();
 
   useEffect(() => {
     let unlisten: UnlistenFn | null = null;
@@ -110,32 +74,43 @@ const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
 
   if (images.length === 0) {
     return (
-      <div className={mergeClasses(styles.container, styles.empty)}>
-        <Subtitle1>No Images Loaded</Subtitle1>
-      </div>
+      <Flex align="center" justify="center" h="100%">
+        <Text c="dimmed">No Images Loaded</Text>
+      </Flex>
     );
   }
 
   return (
-    <div className={mergeClasses(styles.grid, styles.container)}>
+    <Flex wrap="wrap" gap="lg" style={{ userSelect: 'none' }}>
       {images?.map((image) => (
-        <Card
+        <UnstyledButton
           key={image.filename}
-          selected={selectedImage?.assetUrl === image.assetUrl}
-          onSelectionChange={() => onImageSelected(image)}
+          aria-selected={selectedImage?.path === image.path}
+          onClick={() => {
+            onImageSelected(image);
+          }}
         >
-          <CardPreview className={styles.image}>
-            <Image
-              key={image.filename}
-              src={image.assetUrl}
-              fit="contain"
-              alt={image.filename}
-            />
-          </CardPreview>
-          <CardHeader header={<Text>{image.filename}</Text>} />
-        </Card>
+          <Card
+            key={image.filename}
+            shadow="md"
+            bg={selectedImage?.path === image.path ? 'gray.4' : undefined}
+          >
+            <Card.Section>
+              <Image
+                src={image.assetUrl}
+                fit="contain"
+                alt={image.filename}
+                style={{ width: rem(200), height: rem(200) }}
+              />
+            </Card.Section>
+
+            <Card.Section inheritPadding py="xs">
+              <Text>{image.filename}</Text>
+            </Card.Section>
+          </Card>
+        </UnstyledButton>
       ))}
-    </div>
+    </Flex>
   );
 };
 

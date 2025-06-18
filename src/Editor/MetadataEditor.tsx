@@ -1,75 +1,30 @@
 import {
-  Caption1,
-  Field,
+  Alert,
+  Box,
+  Button,
+  Center,
+  Divider,
+  Group,
   Input,
-  MessageBar,
-  Spinner,
-  Subtitle1,
-  Toolbar,
-  ToolbarButton,
-  makeStyles,
-  tokens,
-} from '@fluentui/react-components';
-import { ImageEditRegular } from '@fluentui/react-icons';
-import { useCallback, useEffect, useState } from 'react';
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
+import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
+import { useCallback, useState } from 'react';
 import MapField from '../MapField/MapField';
 import type { ImageInfo } from '../core/file-manager';
-import {
-  type ExifData,
-  exifData,
-  readMetadata,
-  updateMetadata,
-} from '../core/metadata-handler';
+import { exifData, updateMetadata } from '../core/metadata-handler';
+// @ts-expect-error
+import styles from './MetadataEditor.module.css';
 import useExif from './useExif';
-
-const useStyles = makeStyles({
-  container: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  titlebar: {
-    padding: tokens.spacingHorizontalL,
-    borderBottomColor: tokens.colorNeutralStroke3,
-    borderBottomWidth: tokens.strokeWidthThin,
-    borderBottomStyle: 'solid',
-  },
-  centered: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  loader: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: tokens.spacingVerticalM,
-  },
-  formFields: {
-    padding: tokens.spacingHorizontalL,
-    overflow: 'scroll',
-  },
-  editForm: {
-    flexGrow: '1',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    overflow: 'clip',
-  },
-  toolbar: {
-    justifyContent: 'space-between',
-    boxShadow: tokens.shadow2,
-    borderRadius: tokens.borderRadiusSmall,
-  },
-});
 
 interface Props {
   image?: ImageInfo;
 }
 
 function MetadataEditor({ image }: Props) {
-  const styles = useStyles();
   const { loadingStatus, exif, setExif } = useExif(image);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -93,33 +48,39 @@ function MetadataEditor({ image }: Props) {
 
   if (!image) {
     return (
-      <div className={styles.container}>
-        <div className={styles.centered}>
-          <Caption1>No Image Selected</Caption1>
-        </div>
-      </div>
+      <Center h="100%">
+        <Text c="dimmed">No Image Selected</Text>
+      </Center>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.titlebar}>
-        <Subtitle1>{image.filename}</Subtitle1>
+    <Stack h="100%" gap={0}>
+      <div>
+        <Box p="md">
+          <Title order={2} size="xl">
+            {image.filename}
+          </Title>
+        </Box>
+
+        <Divider />
       </div>
 
       {loadingStatus === 'active' && (
-        <div className={styles.centered}>
-          <div className={styles.loader}>
-            <Spinner />
-            <Caption1>Loading Metadata...</Caption1>
-          </div>
-        </div>
+        <Center h="100%">
+          <Stack align="center">
+            <Loader />
+            <Text c="dimmed">Loading Metadata...</Text>
+          </Stack>
+        </Center>
       )}
 
       {loadingStatus === 'errored' && (
-        <div className={styles.centered}>
-          <MessageBar intent="error">Error Loading Metadata</MessageBar>
-        </div>
+        <Center h="100%">
+          <Alert color="red" variant="filled">
+            Error Loading Metadata
+          </Alert>
+        </Center>
       )}
 
       {loadingStatus === 'idle' && exif !== null && (
@@ -130,7 +91,7 @@ function MetadataEditor({ image }: Props) {
             saveMetadata();
           }}
         >
-          <div className={styles.formFields}>
+          <Box py="sm" px="md" style={{ overflow: 'auto' }}>
             <MapField
               latitude={exif.GPSLatitude}
               longitude={exif.GPSLongitude}
@@ -149,10 +110,12 @@ function MetadataEditor({ image }: Props) {
             />
 
             {exifData.keyof().options.map((tagName) => (
-              <Field
+              <Input.Wrapper
                 key={tagName}
                 label={tagName}
-                hint={exifData.shape[tagName].meta()?.realTag}
+                description={
+                  exifData.shape[tagName].meta()?.realTag as string | undefined
+                }
               >
                 <Input
                   disabled={!isEditing}
@@ -169,37 +132,52 @@ function MetadataEditor({ image }: Props) {
                     });
                   }}
                 />
-              </Field>
+              </Input.Wrapper>
             ))}
-          </div>
+          </Box>
 
-          <Toolbar className={styles.toolbar}>
-            {!isEditing && (
-              <ToolbarButton
-                type="button"
-                aria-description="Edit"
-                icon={<ImageEditRegular />}
-                onClick={() => setIsEditing(true)}
-              />
-            )}
+          <div>
+            <Divider />
 
-            {isEditing && (
-              <>
-                <ToolbarButton
-                  onClick={() => setIsEditing(false)}
+            <Group p="md" justify="space-between">
+              {!isEditing && (
+                <Button
                   type="button"
+                  title="Edit"
+                  leftSection={<IconEdit size={16} />}
+                  onClick={() => setIsEditing(true)}
+                  size="xs"
                 >
-                  Cancel
-                </ToolbarButton>
-                <ToolbarButton type="submit" appearance="primary">
-                  Save
-                </ToolbarButton>
-              </>
-            )}
-          </Toolbar>
+                  Edit
+                </Button>
+              )}
+
+              {isEditing && (
+                <>
+                  <Button
+                    type="button"
+                    variant="default"
+                    leftSection={<IconCancel size={16} />}
+                    size="xs"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    leftSection={<IconCheck size={16} />}
+                    size="xs"
+                  >
+                    Save
+                  </Button>
+                </>
+              )}
+            </Group>
+          </div>
         </form>
       )}
-    </div>
+    </Stack>
   );
 }
 

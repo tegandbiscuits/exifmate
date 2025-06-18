@@ -1,9 +1,10 @@
-import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+import { MantineProvider } from '@mantine/core';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { createAppMenu } from './core/app-menu';
 import { isMobile } from './core/util';
+import '@mantine/core/styles.css';
 
 const root = document.getElementById('root');
 if (!root) {
@@ -12,9 +13,9 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <FluentProvider theme={webLightTheme}>
+    <MantineProvider>
       <App />
-    </FluentProvider>
+    </MantineProvider>
   </StrictMode>,
 );
 

@@ -1,12 +1,6 @@
-import { makeStyles } from '@fluentui/react-components';
+import { rem } from '@mantine/core';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import LocationMarker from './Locationmarker';
-
-const useStyles = makeStyles({
-  map: {
-    height: '200px',
-  },
-});
 
 interface MapProps {
   latitude?: number;
@@ -21,13 +15,11 @@ function MapField({
   onPositionChange,
   disabled,
 }: MapProps) {
-  const styles = useStyles();
-
   return (
     <MapContainer
       center={[latitude ?? 0, longitude ?? 0]}
       zoom={13}
-      className={styles.map}
+      style={{ height: rem(200) }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

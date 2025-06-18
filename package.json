@@ -11,8 +11,9 @@
     "lint": "biome check"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.64.0",
-    "@fluentui/react-icons": "^2.0.302",
+    "@mantine/core": "^8.1.1",
+    "@mantine/hooks": "^8.1.1",
+    "@tabler/icons-react": "^3.34.0",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-dialog": "~2",
     "@tauri-apps/plugin-fs": "~2",
@@ -36,6 +37,9 @@
     "@vitejs/plugin-react-swc": "^3.9.0",
     "electron": "^36.3.2",
     "globals": "^16.0.0",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
