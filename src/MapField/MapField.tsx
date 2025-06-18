@@ -1,24 +1,12 @@
 import { makeStyles } from '@fluentui/react-components';
-import { MapContainer, Marker, TileLayer, useMapEvent } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import LocationMarker from './Locationmarker';
 
 const useStyles = makeStyles({
   map: {
     height: '200px',
   },
 });
-
-interface LocationProps {
-  position: [number, number];
-  setPosition: (position: LocationProps['position']) => void;
-}
-
-function LocationMarker({ position, setPosition }: LocationProps) {
-  useMapEvent('click', (e) => {
-    setPosition([e.latlng.lat, e.latlng.lng]);
-  });
-
-  return <Marker position={position} />;
-}
 
 interface MapProps {
   latitude?: number;

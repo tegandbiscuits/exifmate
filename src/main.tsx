@@ -2,8 +2,8 @@ import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import { createAppMenu } from './app-menu';
-import { isMobile } from './util';
+import { createAppMenu } from './core/app-menu';
+import { isMobile } from './core/util';
 
 const root = document.getElementById('root');
 if (!root) {

@@ -11,7 +11,7 @@ import {
 } from '@fluentui/react-components';
 import { type UnlistenFn, listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from 'react';
-import type { ImageInfo } from './file-manager';
+import type { ImageInfo } from './core/file-manager';
 
 const useStyles = makeStyles({
   container: {

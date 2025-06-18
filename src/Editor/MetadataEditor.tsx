@@ -12,14 +12,15 @@ import {
 } from '@fluentui/react-components';
 import { ImageEditRegular } from '@fluentui/react-icons';
 import { useCallback, useEffect, useState } from 'react';
-import MapField from './MapField';
-import type { ImageInfo } from './file-manager';
+import MapField from '../MapField/MapField';
+import type { ImageInfo } from '../core/file-manager';
 import {
   type ExifData,
   exifData,
   readMetadata,
   updateMetadata,
-} from './metadata-handler';
+} from '../core/metadata-handler';
+import useExif from './useExif';
 
 const useStyles = makeStyles({
   container: {
@@ -69,29 +70,9 @@ interface Props {
 
 function MetadataEditor({ image }: Props) {
   const styles = useStyles();
-  const [loadingStatus, setLoadingStatus] = useState<
-    'idle' | 'loading' | 'errored'
-  >('idle');
+  const { loadingStatus, exif, setExif } = useExif(image);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  const [exif, setExif] = useState<ExifData | null>(null);
-
-  useEffect(() => {
-    if (!image) {
-      return;
-    }
-
-    setLoadingStatus('loading');
-
-    readMetadata(image.filename, image.path)
-      .then((res) => {
-        setLoadingStatus('idle');
-        setExif(res);
-      })
-      .catch(() => {
-        setLoadingStatus('errored');
-      });
-  }, [image]);
 
   const saveMetadata = useCallback(() => {
     if (!image || !exif) {
@@ -126,7 +107,7 @@ function MetadataEditor({ image }: Props) {
         <Subtitle1>{image.filename}</Subtitle1>
       </div>
 
-      {loadingStatus === 'loading' && (
+      {loadingStatus === 'active' && (
         <div className={styles.centered}>
           <div className={styles.loader}>
             <Spinner />
@@ -175,7 +156,7 @@ function MetadataEditor({ image }: Props) {
               >
                 <Input
                   disabled={!isEditing}
-                  value={String(exif[tagName])}
+                  value={String(exif[tagName] ?? '')}
                   onChange={(e) => {
                     setExif((prev) => {
                       if (prev !== null) {

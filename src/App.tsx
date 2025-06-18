@@ -9,8 +9,8 @@ import { Add16Filled } from '@fluentui/react-icons/fonts';
 import { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import ImageGrid from './ImageGrid';
-import MetadataEditor from './MetadataEditor';
-import { type ImageInfo, findImages } from './file-manager';
+import MetadataEditor from './Editor/MetadataEditor';
+import { type ImageInfo, findImages } from './core/file-manager';
 
 const useStyles = makeStyles({
   titlebar: {
