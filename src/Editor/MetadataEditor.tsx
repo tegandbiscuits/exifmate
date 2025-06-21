@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Alert,
   Box,
@@ -5,19 +6,25 @@ import {
   Center,
   Divider,
   Group,
-  Input,
   Loader,
+  LoadingOverlay,
   Stack,
+  Tabs,
   Text,
   Title,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
-import { useCallback, useState } from 'react';
-import MapField from '../MapField/MapField';
+import { useCallback, useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import type { ImageInfo } from '../core/file-manager';
-import { exifData, updateMetadata } from '../core/metadata-handler';
-// @ts-expect-error
-import styles from './MetadataEditor.module.css';
+import {
+  type ExifData,
+  exifData,
+  updateMetadata,
+} from '../core/metadata-handler';
+import ExifTab from './ExifTab';
+import LocationTab from './LocationTab';
 import useExif from './useExif';
 
 interface Props {
@@ -25,26 +32,46 @@ interface Props {
 }
 
 function MetadataEditor({ image }: Props) {
-  const { loadingStatus, exif, setExif } = useExif(image);
+  const { loadingStatus, exif } = useExif(image);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const saveMetadata = useCallback(() => {
-    if (!image || !exif) {
-      return;
+  const form = useForm({
+    mode: 'onChange',
+    disabled: !isEditing,
+    resolver: zodResolver(exifData),
+  });
+
+  useEffect(() => {
+    if (exif) {
+      form.reset(exif);
     }
+  }, [exif, form.reset]);
 
-    console.log('starting save');
+  useEffect(() => {
+    if (image) {
+      setIsEditing(false);
+    }
+  }, [image]);
 
-    setIsEditing(false);
-    updateMetadata(image.filename, image.path, exif)
-      .then(() => {
-        console.log('yayyy! :D');
-      })
-      .catch((err) => {
-        console.error('oh no :(', err);
-      });
-  }, [image, exif]);
+  const saveMetadata = useCallback(
+    async (newExif: ExifData) => {
+      if (!image) {
+        return;
+      }
+
+      setIsEditing(false);
+      try {
+        await updateMetadata(image.filename, image.path, newExif);
+      } catch (err) {
+        notifications.show({
+          message: `Failed saving ${image.filename}`,
+          color: 'red',
+        });
+      }
+    },
+    [image],
+  );
 
   if (!image) {
     return (
@@ -56,15 +83,11 @@ function MetadataEditor({ image }: Props) {
 
   return (
     <Stack h="100%" gap={0}>
-      <div>
-        <Box p="md">
-          <Title order={2} size="xl">
-            {image.filename}
-          </Title>
-        </Box>
-
-        <Divider />
-      </div>
+      <Box p="md">
+        <Title order={2} size="xl">
+          {image.filename}
+        </Title>
+      </Box>
 
       {loadingStatus === 'active' && (
         <Center h="100%">
@@ -84,57 +107,54 @@ function MetadataEditor({ image }: Props) {
       )}
 
       {loadingStatus === 'idle' && exif !== null && (
-        <form
-          className={styles.editForm}
-          onSubmit={(e) => {
-            e.preventDefault();
-            saveMetadata();
+        <Stack
+          gap={0}
+          pos="relative"
+          style={{
+            flexGrow: 1,
+            overflow: 'clip',
           }}
         >
-          <Box py="sm" px="md" style={{ overflow: 'auto' }}>
-            <MapField
-              latitude={exif.GPSLatitude}
-              longitude={exif.GPSLongitude}
-              disabled={!isEditing}
-              onPositionChange={([lat, lon]) => {
-                setExif((prev) => {
-                  if (!prev) return null;
+          <LoadingOverlay
+            visible={form.formState.isSubmitting}
+            overlayProps={{ blur: 2 }}
+          />
 
-                  return {
-                    ...prev,
-                    GPSLatitude: lat,
-                    GPSLongitude: lon,
-                  };
-                });
+          <FormProvider {...form}>
+            <form
+              id="metadata-form"
+              style={{
+                flexGrow: 1,
+                overflow: 'auto',
               }}
-            />
-
-            {exifData.keyof().options.map((tagName) => (
-              <Input.Wrapper
-                key={tagName}
-                label={tagName}
-                description={
-                  exifData.shape[tagName].meta()?.realTag as string | undefined
-                }
+              onSubmit={form.handleSubmit(saveMetadata)}
+            >
+              <Tabs
+                display="flex"
+                h="100%"
+                defaultValue="exif"
+                style={{
+                  flexDirection: 'column',
+                  overflow: 'clip',
+                }}
               >
-                <Input
-                  disabled={!isEditing}
-                  value={String(exif[tagName] ?? '')}
-                  onChange={(e) => {
-                    setExif((prev) => {
-                      if (prev !== null) {
-                        return {
-                          ...prev,
-                          [tagName]: e.target.value,
-                        };
-                      }
-                      return null;
-                    });
-                  }}
-                />
-              </Input.Wrapper>
-            ))}
-          </Box>
+                <Tabs.List>
+                  <Tabs.Tab value="exif">EXIF</Tabs.Tab>
+                  <Tabs.Tab value="gps">Location</Tabs.Tab>
+                </Tabs.List>
+
+                <Box py="sm" px="md" style={{ overflow: 'auto' }}>
+                  <Tabs.Panel value="exif">
+                    <ExifTab />
+                  </Tabs.Panel>
+
+                  <Tabs.Panel value="gps">
+                    <LocationTab />
+                  </Tabs.Panel>
+                </Box>
+              </Tabs>
+            </form>
+          </FormProvider>
 
           <div>
             <Divider />
@@ -155,17 +175,21 @@ function MetadataEditor({ image }: Props) {
               {isEditing && (
                 <>
                   <Button
-                    type="button"
+                    type="reset"
                     variant="default"
                     leftSection={<IconCancel size={16} />}
                     size="xs"
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => {
+                      setIsEditing(false);
+                      form.reset();
+                    }}
                   >
                     Cancel
                   </Button>
 
                   <Button
                     type="submit"
+                    form="metadata-form"
                     leftSection={<IconCheck size={16} />}
                     size="xs"
                   >
@@ -175,7 +199,7 @@ function MetadataEditor({ image }: Props) {
               )}
             </Group>
           </div>
-        </form>
+        </Stack>
       )}
     </Stack>
   );

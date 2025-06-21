@@ -14,6 +14,7 @@ function useExif(image?: ImageInfo) {
     }
 
     setLoadingStatus('active');
+    setExif(null);
 
     readMetadata(image.filename, image.path)
       .then((res) => {

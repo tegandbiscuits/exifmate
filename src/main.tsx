@@ -1,10 +1,12 @@
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { createAppMenu } from './core/app-menu';
 import { isMobile } from './core/util';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 const root = document.getElementById('root');
 if (!root) {
@@ -14,6 +16,7 @@ if (!root) {
 createRoot(root).render(
   <StrictMode>
     <MantineProvider>
+      <Notifications />
       <App />
     </MantineProvider>
   </StrictMode>,
