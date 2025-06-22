@@ -7,6 +7,7 @@ import { createAppMenu } from './core/app-menu';
 import { isMobile } from './core/util';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import { ImageProvider } from './ImageContext';
 import theme from './theme';
 
 const root = document.getElementById('root');
@@ -18,7 +19,10 @@ createRoot(root).render(
   <StrictMode>
     <MantineProvider theme={theme}>
       <Notifications />
-      <App />
+
+      <ImageProvider>
+        <App />
+      </ImageProvider>
     </MantineProvider>
   </StrictMode>,
 );

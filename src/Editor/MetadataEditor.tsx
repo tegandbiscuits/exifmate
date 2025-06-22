@@ -17,8 +17,9 @@ import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useImageSelection } from '../ImageContext';
 import { updateMetadata } from '../core/metadata-handler';
-import { type ExifData, type ImageInfo, exifData } from '../core/types';
+import { type ExifData, exifData } from '../core/types';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
 import {
@@ -29,12 +30,9 @@ import {
 } from './MetadataEditor.css';
 import useExif from './useExif';
 
-interface Props {
-  image?: ImageInfo;
-}
-
-function MetadataEditor({ image }: Props) {
-  const { loadingStatus, exif } = useExif(image);
+function MetadataEditor() {
+  const { selectedImage } = useImageSelection();
+  const { loadingStatus, exif } = useExif(selectedImage);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -51,31 +49,35 @@ function MetadataEditor({ image }: Props) {
   }, [exif, form.reset]);
 
   useEffect(() => {
-    if (image) {
+    if (selectedImage) {
       setIsEditing(false);
     }
-  }, [image]);
+  }, [selectedImage]);
 
   const saveMetadata = useCallback(
     async (newExif: ExifData) => {
-      if (!image) {
+      if (!selectedImage) {
         return;
       }
 
       setIsEditing(false);
       try {
-        await updateMetadata(image.filename, image.path, newExif);
+        await updateMetadata(
+          selectedImage.filename,
+          selectedImage.path,
+          newExif,
+        );
       } catch (err) {
         notifications.show({
-          message: `Failed saving ${image.filename}`,
+          message: `Failed saving ${selectedImage.filename}`,
           color: 'red',
         });
       }
     },
-    [image],
+    [selectedImage],
   );
 
-  if (!image) {
+  if (!selectedImage) {
     return (
       <Center h="100%">
         <Text c="dimmed">No Image Selected</Text>
@@ -87,7 +89,7 @@ function MetadataEditor({ image }: Props) {
     <Stack h="100%" gap={0}>
       <Box p="md">
         <Title order={2} size="xl">
-          {image.filename}
+          {selectedImage.filename}
         </Title>
       </Box>
 

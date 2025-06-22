@@ -1,6 +1,5 @@
 import { ActionIcon, Box, Flex, Title } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
-import { useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   editorPanelStyles,
@@ -12,11 +11,8 @@ import {
 import MetadataEditor from './Editor/MetadataEditor';
 import ImageGrid from './ImageGrid/ImageGrid';
 import { findImages } from './core/file-manager';
-import type { ImageInfo } from './core/types';
 
-const App = () => {
-  const [selectedImage, setSelectedImage] = useState<ImageInfo | undefined>();
-
+function App() {
   return (
     <PanelGroup direction="horizontal" className={rootStyles}>
       <Panel className={imageSelectionStyles} defaultSize={65}>
@@ -40,20 +36,17 @@ const App = () => {
         </Flex>
 
         <Box h="100%" p="lg" bg="gray.0" className={imageGridPanelStyles}>
-          <ImageGrid
-            selectedImage={selectedImage}
-            onImageSelected={setSelectedImage}
-          />
+          <ImageGrid />
         </Box>
       </Panel>
 
       <PanelResizeHandle />
 
       <Panel className={editorPanelStyles} defaultSize={35}>
-        <MetadataEditor image={selectedImage} />
+        <MetadataEditor />
       </Panel>
     </PanelGroup>
   );
-};
+}
 
 export default App;

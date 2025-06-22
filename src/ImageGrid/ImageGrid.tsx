@@ -1,8 +1,5 @@
 import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
-import type { UnlistenFn } from '@tauri-apps/api/event';
-import { useEffect, useState } from 'react';
-import { onImagesOpened } from '../core/events';
-import type { ImageInfo } from '../core/types';
+import { useImageSelection } from '../ImageContext';
 import { containerStyles } from './ImageGrid.css';
 
 // const useGridSelection = (items: string[]) => {
@@ -47,32 +44,13 @@ import { containerStyles } from './ImageGrid.css';
 //   };
 // };
 
-interface Props {
-  selectedImage?: ImageInfo;
-  onImageSelected: (image: ImageInfo) => void;
-}
-
 /*
  * I think this'll go slow if the images are large; need to test.
  * May want to convert to thumbnail size base64 in Rust, but that might
  * be slow going too, but probably ultimately better.
  */
-const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
-  const [images, setImages] = useState<ImageInfo[]>([]);
-
-  useEffect(() => {
-    let unlisten: UnlistenFn | null = null;
-
-    onImagesOpened((images) => {
-      setImages(images);
-    }).then((clean) => {
-      unlisten = clean;
-    });
-
-    return () => {
-      unlisten?.();
-    };
-  }, []);
+const ImageGrid = () => {
+  const { images, selectedImage, setSelectedImage } = useImageSelection();
 
   if (images.length === 0) {
     return (
@@ -89,7 +67,7 @@ const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
           key={image.filename}
           aria-selected={selectedImage?.path === image.path}
           onClick={() => {
-            onImageSelected(image);
+            setSelectedImage(image);
           }}
         >
           <Card
