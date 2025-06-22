@@ -11,7 +11,8 @@ import {
 } from './App.css';
 import MetadataEditor from './Editor/MetadataEditor';
 import ImageGrid from './ImageGrid/ImageGrid';
-import { type ImageInfo, findImages } from './core/file-manager';
+import { findImages } from './core/file-manager';
+import type { ImageInfo } from './core/types';
 
 const App = () => {
   const [selectedImage, setSelectedImage] = useState<ImageInfo | undefined>();

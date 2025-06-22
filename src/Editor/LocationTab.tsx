@@ -2,7 +2,7 @@ import { Fieldset, Stack, rem } from '@mantine/core';
 import { IconMapPinFilled } from '@tabler/icons-react';
 import { useFormContext } from 'react-hook-form';
 import MapGL, { Marker } from 'react-map-gl/maplibre';
-import type { ExifData } from '../core/metadata-handler';
+import type { ExifData } from '../core/types';
 import ExifInput from './ExifInput';
 
 const LONDON_LOC = [51.5, 0] as const;

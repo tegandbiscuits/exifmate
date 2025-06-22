@@ -1,16 +1,11 @@
 import { convertFileSrc } from '@tauri-apps/api/core';
-import { emit } from '@tauri-apps/api/event';
 import { basename } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
+import { imagesOpened } from './events';
+import type { ImageInfo } from './types';
 import { isMobile } from './util';
 
 // const SUPPORTED_TYPES = /jpe?g$/i;
-
-export interface ImageInfo {
-  filename: string;
-  assetUrl: string;
-  path: string;
-}
 
 export async function findImages() {
   const paths = await open({ multiple: true });
@@ -30,7 +25,7 @@ export async function findImages() {
     }),
   );
 
-  await emit('files-selected', { images });
+  await imagesOpened(images);
 }
 
 // export async function findImages() {

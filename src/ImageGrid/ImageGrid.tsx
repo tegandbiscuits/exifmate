@@ -1,7 +1,8 @@
 import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
-import { type UnlistenFn, listen } from '@tauri-apps/api/event';
+import type { UnlistenFn } from '@tauri-apps/api/event';
 import { useEffect, useState } from 'react';
-import type { ImageInfo } from '../core/file-manager';
+import { onImagesOpened } from '../core/events';
+import type { ImageInfo } from '../core/types';
 import { containerStyles } from './ImageGrid.css';
 
 // const useGridSelection = (items: string[]) => {
@@ -62,8 +63,8 @@ const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
   useEffect(() => {
     let unlisten: UnlistenFn | null = null;
 
-    listen<{ images: ImageInfo[] }>('files-selected', (res) => {
-      setImages(res.payload.images);
+    onImagesOpened((images) => {
+      setImages(images);
     }).then((clean) => {
       unlisten = clean;
     });

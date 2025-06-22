@@ -17,12 +17,8 @@ import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import type { ImageInfo } from '../core/file-manager';
-import {
-  type ExifData,
-  exifData,
-  updateMetadata,
-} from '../core/metadata-handler';
+import { updateMetadata } from '../core/metadata-handler';
+import { type ExifData, type ImageInfo, exifData } from '../core/types';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
 import {

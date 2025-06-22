@@ -1,7 +1,7 @@
 import { Select, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { Controller, useFormContext } from 'react-hook-form';
-import { type ExifData, exifData } from '../core/metadata-handler';
+import { type ExifData, exifData } from '../core/types';
 import '@mantine/dates/styles.css';
 import { EXIF_DATE_FORMAT, dayjs } from '../core/util';
 

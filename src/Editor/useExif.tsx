@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { ImageInfo } from '../core/file-manager';
-import { type ExifData, readMetadata } from '../core/metadata-handler';
+import { readMetadata } from '../core/metadata-handler';
+import type { ExifData, ImageInfo } from '../core/types';
 
 type Activity = 'idle' | 'active' | 'errored';
 
