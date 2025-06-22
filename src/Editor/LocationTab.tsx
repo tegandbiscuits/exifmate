@@ -5,6 +5,8 @@ import MapGL, { Marker } from 'react-map-gl/maplibre';
 import type { ExifData } from '../core/metadata-handler';
 import ExifInput from './ExifInput';
 
+const LONDON_LOC = [51.5, 0] as const;
+
 function LocationTab() {
   const {
     setValue,
@@ -24,6 +26,12 @@ function LocationTab() {
         }}
         style={{ height: rem(200) }}
         mapStyle="https://tiles.openfreemap.org/styles/bright"
+        onLoad={(m) => {
+          m.target.setCenter({
+            lat: initialLat ?? LONDON_LOC[0],
+            lon: initialLon ?? LONDON_LOC[1],
+          });
+        }}
         onClick={({ lngLat: { lat, lng } }) => {
           if (!disabled) {
             setValue('GPSLatitude', lat);
