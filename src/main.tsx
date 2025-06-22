@@ -2,7 +2,7 @@ import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import Shell from './Shell/Shell';
 import { createAppMenu } from './core/app-menu';
 import { isMobile } from './core/util';
 import '@mantine/core/styles.css';
@@ -21,7 +21,7 @@ createRoot(root).render(
       <Notifications />
 
       <ImageProvider>
-        <App />
+        <Shell />
       </ImageProvider>
     </MantineProvider>
   </StrictMode>,

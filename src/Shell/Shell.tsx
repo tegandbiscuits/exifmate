@@ -1,18 +1,18 @@
 import { ActionIcon, Box, Flex, Title } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import MetadataEditor from '../Editor/MetadataEditor';
+import ImageGrid from '../ImageGrid/ImageGrid';
+import { findImages } from '../core/file-manager';
 import {
   editorPanelStyles,
   imageGridPanelStyles,
   imageSelectionStyles,
   rootStyles,
   titlebarStyles,
-} from './App.css';
-import MetadataEditor from './Editor/MetadataEditor';
-import ImageGrid from './ImageGrid/ImageGrid';
-import { findImages } from './core/file-manager';
+} from './Shell.css';
 
-function App() {
+function Shell() {
   return (
     <PanelGroup direction="horizontal" className={rootStyles}>
       <Panel className={imageSelectionStyles} defaultSize={65}>
@@ -49,4 +49,4 @@ function App() {
   );
 }
 
-export default App;
+export default Shell;
