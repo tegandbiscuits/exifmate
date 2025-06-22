@@ -1,7 +1,8 @@
 import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
 import { type UnlistenFn, listen } from '@tauri-apps/api/event';
 import { useEffect, useState } from 'react';
-import type { ImageInfo } from './core/file-manager';
+import type { ImageInfo } from '../core/file-manager';
+import { containerStyles } from './ImageGrid.css';
 
 // const useGridSelection = (items: string[]) => {
 //   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -81,7 +82,7 @@ const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
   }
 
   return (
-    <Flex wrap="wrap" gap="lg" style={{ userSelect: 'none' }}>
+    <Flex wrap="wrap" gap="lg" className={containerStyles}>
       {images?.map((image) => (
         <UnstyledButton
           key={image.filename}
@@ -100,7 +101,8 @@ const ImageGrid = ({ selectedImage, onImageSelected }: Props) => {
                 src={image.assetUrl}
                 fit="contain"
                 alt={image.filename}
-                style={{ width: rem(200), height: rem(200) }}
+                w={rem(200)}
+                h={rem(200)}
               />
             </Card.Section>
 

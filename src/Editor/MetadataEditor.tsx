@@ -25,6 +25,12 @@ import {
 } from '../core/metadata-handler';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
+import {
+  formContainerStyles,
+  formStyles,
+  tabContainerStyles,
+  tabContentStyles,
+} from './MetadataEditor.css';
 import useExif from './useExif';
 
 interface Props {
@@ -107,14 +113,7 @@ function MetadataEditor({ image }: Props) {
       )}
 
       {loadingStatus === 'idle' && exif !== null && (
-        <Stack
-          gap={0}
-          pos="relative"
-          style={{
-            flexGrow: 1,
-            overflow: 'clip',
-          }}
-        >
+        <Stack gap={0} pos="relative" className={formContainerStyles}>
           <LoadingOverlay
             visible={form.formState.isSubmitting}
             overlayProps={{ blur: 2 }}
@@ -123,27 +122,16 @@ function MetadataEditor({ image }: Props) {
           <FormProvider {...form}>
             <form
               id="metadata-form"
-              style={{
-                flexGrow: 1,
-                overflow: 'auto',
-              }}
+              className={formStyles}
               onSubmit={form.handleSubmit(saveMetadata)}
             >
-              <Tabs
-                display="flex"
-                h="100%"
-                defaultValue="exif"
-                style={{
-                  flexDirection: 'column',
-                  overflow: 'clip',
-                }}
-              >
+              <Tabs h="100%" defaultValue="exif" className={tabContainerStyles}>
                 <Tabs.List>
                   <Tabs.Tab value="exif">EXIF</Tabs.Tab>
                   <Tabs.Tab value="gps">Location</Tabs.Tab>
                 </Tabs.List>
 
-                <Box py="sm" px="md" style={{ overflow: 'auto' }}>
+                <Box py="sm" px="md" className={tabContentStyles}>
                   <Tabs.Panel value="exif">
                     <ExifTab />
                   </Tabs.Panel>

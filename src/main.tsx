@@ -7,6 +7,7 @@ import { createAppMenu } from './core/app-menu';
 import { isMobile } from './core/util';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import theme from './theme';
 
 const root = document.getElementById('root');
 if (!root) {
@@ -15,7 +16,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <Notifications />
       <App />
     </MantineProvider>
