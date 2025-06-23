@@ -14,6 +14,7 @@ function LocationTab() {
     watch,
     formState: { disabled },
   } = useFormContext<ExifData>();
+  // TODO: would be nice if this could be the last centered place instead of London
   const [initialLat, initialLon] = getValues(['GPSLatitude', 'GPSLongitude']);
 
   return (
@@ -48,7 +49,7 @@ function LocationTab() {
         </Marker>
       </MapGL>
 
-      <Fieldset legend="GPS">
+      <Fieldset mt="lg" legend="GPS">
         <Stack gap="xs">
           <ExifInput tagName="GPSLatitude" />
           <ExifInput tagName="GPSLongitude" />

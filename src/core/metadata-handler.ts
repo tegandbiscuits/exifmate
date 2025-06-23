@@ -1,12 +1,17 @@
 import { BaseDirectory, readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { parseMetadata, writeMetadata } from '@vshirole/exiftool';
-import { type ExifData, exifData } from './types';
-import { isMobile } from './util';
+import {
+  type ExifData,
+  type ImageInfo,
+  exifData,
+  savableExifData,
+} from './types';
+import { aggregateExif, isMobile } from './util';
 
-export async function readMetadata(
-  filename: string,
-  path: string,
-): Promise<ExifData> {
+async function readImageMetadata({
+  path,
+  filename,
+}: ImageInfo): Promise<ExifData> {
   const binary = await readFile(path);
   const readTags = exifData.keyof().options.map((tag) => `-${tag}`);
 
@@ -22,26 +27,34 @@ export async function readMetadata(
   return exifData.parseAsync(readResult.data[0]);
 }
 
+export async function readMetadata(
+  images: ImageInfo[],
+): Promise<ExifData | null> {
+  const reads: Promise<ExifData>[] = images.map((i) => readImageMetadata(i));
+  const allMetadata = await Promise.all(reads);
+  return aggregateExif(allMetadata);
+}
+
 // TODO: should consider making empty values be nulled
-export async function updateMetadata(
-  filename: string,
-  path: string,
+async function updateImageMetadata(
+  { path, filename }: ImageInfo,
   newData: Partial<ExifData>,
 ) {
   const binary = await readFile(path);
 
   const writeResult = await writeMetadata(
     { name: filename, data: binary },
-    { tags: newData, extraArgs: ['-n'] }, // TODO: probably should validate before trying to save
+    { tags: savableExifData(newData), extraArgs: ['-n'] }, // TODO: probably should validate before trying to save
   );
 
   // @ts-expect-error
   if (writeResult.warnings) {
     // @ts-expect-error
-    console.debug(writeResult.warnings);
+    console.debug(writeResult.warnings); // TODO: should notify for warnings too
   }
 
   if (!writeResult.success) {
+    console.error('Save error:', writeResult.error);
     throw new Error(`Failed to set metadata: ${writeResult.error}`);
   }
 
@@ -52,4 +65,15 @@ export async function updateMetadata(
   } else {
     writeFile(path, writeResult.data);
   }
+}
+
+// TODO: need to notify on partial failure (then use `allSettled`)
+export async function updateMetadata(
+  images: ImageInfo[],
+  newData: Partial<ExifData>,
+) {
+  const updates: Promise<void>[] = images.map((i) =>
+    updateImageMetadata(i, newData),
+  );
+  await Promise.all(updates);
 }

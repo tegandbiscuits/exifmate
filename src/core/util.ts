@@ -1,33 +1,37 @@
 import { type } from '@tauri-apps/plugin-os';
-import djs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
-import z from 'zod/v4';
-
-djs.extend(utc);
-djs.extend(customParseFormat);
-
-export const dayjs = djs;
-export const EXIF_DATE_FORMAT = 'YYYY:MM:DD HH:mm:ss';
-
-export const datetime = z
-  .string()
-  .transform((val) => {
-    let digits = '';
-
-    for (let i = 0; i < val.length; i++) {
-      const char = val[i];
-      const parsed = Number.parseInt(char, 10);
-      if (!Number.isNaN(parsed)) {
-        digits += char;
-      }
-    }
-
-    return dayjs.utc(digits);
-  })
-  .refine((d) => d.isValid(), { error: 'Invalid date format' })
-  .transform((d) => d.format(EXIF_DATE_FORMAT));
+import type { ExifData } from './types';
 
 export function isMobile() {
   return type() === 'ios';
+}
+
+export function aggregateExif(items: ExifData[]): ExifData {
+  const result: ExifData = {};
+
+  if (items.length === 0) {
+    return result;
+  }
+
+  const allKeys = new Set<keyof ExifData>();
+
+  for (const item of items) {
+    for (const key in item) {
+      allKeys.add(key as keyof ExifData);
+    }
+  }
+
+  for (const key of allKeys) {
+    const commonValue = items[0][key];
+
+    const allValuesAreSame = items.every((item) => {
+      const currentValue = item[key];
+      return currentValue === commonValue;
+    });
+
+    if (allValuesAreSame) {
+      (result as Record<keyof ExifData, unknown>)[key] = commonValue;
+    }
+  }
+
+  return result;
 }

@@ -31,8 +31,8 @@ import {
 import useExif from './useExif';
 
 function MetadataEditor() {
-  const { selectedImage } = useImageSelection();
-  const { loadingStatus, exif } = useExif(selectedImage);
+  const { selectedImages } = useImageSelection();
+  const { loadingStatus, exif } = useExif(selectedImages);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -49,35 +49,32 @@ function MetadataEditor() {
   }, [exif, form.reset]);
 
   useEffect(() => {
-    if (selectedImage) {
+    if (selectedImages) {
       setIsEditing(false);
     }
-  }, [selectedImage]);
+  }, [selectedImages]);
 
   const saveMetadata = useCallback(
     async (newExif: ExifData) => {
-      if (!selectedImage) {
+      if (selectedImages.length === 0) {
         return;
       }
 
       setIsEditing(false);
       try {
-        await updateMetadata(
-          selectedImage.filename,
-          selectedImage.path,
-          newExif,
-        );
+        await updateMetadata(selectedImages, newExif);
       } catch (err) {
+        console.log('err', err);
         notifications.show({
-          message: `Failed saving ${selectedImage.filename}`,
+          message: `Failed saving ${selectedImages[0].filename}`,
           color: 'red',
         });
       }
     },
-    [selectedImage],
+    [selectedImages],
   );
 
-  if (!selectedImage) {
+  if (selectedImages.length === 0) {
     return (
       <Center h="100%">
         <Text c="dimmed">No Image Selected</Text>
@@ -89,7 +86,7 @@ function MetadataEditor() {
     <Stack h="100%" gap={0}>
       <Box p="md">
         <Title order={2} size="xl">
-          {selectedImage.filename}
+          {selectedImages[0]?.filename}
         </Title>
       </Box>
 

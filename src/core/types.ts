@@ -1,5 +1,23 @@
 import { z } from 'zod/v4';
-import { datetime } from './util';
+import dayjs from './dayjs';
+
+export const datetime = z
+  .string()
+  .transform((val) => {
+    let digits = '';
+
+    for (let i = 0; i < val.length; i++) {
+      const char = val[i];
+      const parsed = Number.parseInt(char, 10);
+      if (!Number.isNaN(parsed)) {
+        digits += char;
+      }
+    }
+
+    return dayjs.utc(digits);
+  })
+  .refine((d) => d.isValid(), { error: 'Invalid date format' })
+  .transform((d) => d.format('YYYY-MM-DD HH:mm:ss'));
 
 export interface ImageInfo {
   filename: string;
@@ -16,7 +34,7 @@ export const exifData = z.object({
   Software: z.string().or(z.number()).optional(),
   // UserComment: z.string(), // undef
   DateTimeOriginal: datetime.optional().meta({ inputType: 'datetime' }),
-  CreateDate: datetime.meta({
+  CreateDate: datetime.optional().meta({
     realTag: 'DateTimeDigitized',
     inputType: 'datetime',
   }),
@@ -179,3 +197,19 @@ export const exifData = z.object({
 });
 
 export type ExifData = z.infer<typeof exifData>;
+
+const exifDate = z
+  .string()
+  .optional()
+  .transform((s) => (s ? dayjs.utc(s) : undefined))
+  .refine((d) => d?.isValid(), { error: 'Invalid date' })
+  .transform((d) => d?.format('YYYY:MM:DD HH:mm:ss'));
+
+export function savableExifData(exif: ExifData): ExifData {
+  return {
+    ...exif,
+    DateTimeOriginal: exifDate.parse(exif.DateTimeOriginal),
+    CreateDate: exifDate.parse(exif.CreateDate),
+    ModifyDate: exifDate.parse(exif.ModifyDate),
+  };
+}

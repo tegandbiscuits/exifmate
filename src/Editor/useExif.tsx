@@ -4,19 +4,15 @@ import type { ExifData, ImageInfo } from '../core/types';
 
 type Activity = 'idle' | 'active' | 'errored';
 
-function useExif(image?: ImageInfo) {
+function useExif(images: ImageInfo[]) {
   const [loadingStatus, setLoadingStatus] = useState<Activity>('idle');
   const [exif, setExif] = useState<ExifData | null>(null);
 
   useEffect(() => {
-    if (!image) {
-      return;
-    }
-
     setLoadingStatus('active');
     setExif(null);
 
-    readMetadata(image.filename, image.path)
+    readMetadata(images)
       .then((res) => {
         setLoadingStatus('idle');
         setExif(res);
@@ -24,7 +20,7 @@ function useExif(image?: ImageInfo) {
       .catch(() => {
         setLoadingStatus('errored');
       });
-  }, [image]);
+  }, [images]);
 
   return {
     loadingStatus,

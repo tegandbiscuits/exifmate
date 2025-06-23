@@ -1,16 +1,13 @@
-import { Select, TextInput } from '@mantine/core';
-import { DateTimePicker } from '@mantine/dates';
-import { Controller, useFormContext } from 'react-hook-form';
+import { NativeSelect, TextInput } from '@mantine/core';
+import { useFormContext } from 'react-hook-form';
 import { type ExifData, exifData } from '../core/types';
-import '@mantine/dates/styles.css';
-import { EXIF_DATE_FORMAT, dayjs } from '../core/util';
 
 interface Props {
   tagName: keyof typeof exifData.shape;
 }
 
 function ExifInput({ tagName }: Props) {
-  const { register, formState, control } = useFormContext<ExifData>();
+  const { register, formState } = useFormContext<ExifData>();
   const tagMeta = exifData.shape[tagName].meta();
 
   let description: string | undefined;
@@ -25,47 +22,24 @@ function ExifInput({ tagName }: Props) {
     }));
 
     return (
-      <Controller
-        name={tagName}
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            label={tagName}
-            description={description}
-            data={data}
-            value={String(field.value)}
-          />
-        )}
+      <NativeSelect
+        label={tagName}
+        description={description}
+        data={[{ label: '', value: '' }, ...data]}
+        {...register(tagName)}
       />
     );
   }
 
-  if (
+  const isDateInput =
     tagName === 'DateTimeOriginal' ||
     tagName === 'CreateDate' ||
-    tagName === 'ModifyDate'
-  ) {
-    return (
-      <Controller
-        name={tagName}
-        control={control}
-        render={({ field }) => (
-          <DateTimePicker
-            {...field}
-            label={tagName}
-            description={description}
-            withSeconds
-            valueFormat={EXIF_DATE_FORMAT}
-            value={dayjs(field.value, EXIF_DATE_FORMAT).format()}
-          />
-        )}
-      />
-    );
-  }
+    tagName === 'ModifyDate';
 
   return (
     <TextInput
+      type={isDateInput ? 'datetime-local' : 'text'}
+      step={isDateInput ? 1 : undefined}
       label={tagName}
       description={description}
       error={formState.errors[tagName]?.message}
