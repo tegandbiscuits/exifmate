@@ -1,8 +1,9 @@
-import { readMetadata, updateMetadata } from '../metadata-handler';
-import type { writeFile, readFile } from '@tauri-apps/plugin-fs';
+import nodeFs from 'node:fs/promises';
+import type { readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { fs } from 'memfs';
-import { ImageOne, ImageTwo } from './fake-images';
+import { readMetadata, updateMetadata } from '../metadata-handler';
 import type { ImageInfo } from '../types';
+import { ImageOne, ImageTwo } from './fake-images';
 
 vi.mock(import('@tauri-apps/plugin-fs'), async (importOriginal) => {
   const { fs } = await import('memfs');
@@ -36,6 +37,19 @@ vi.mock(import('../util'), async (importOriginal) => {
     ...mod,
     isMobile: vi.fn().mockReturnValue(false),
   };
+});
+
+vi.stubGlobal('fetch', async (url: string) => {
+  if (url.includes('zeroperl-1.0.0.wasm')) {
+    const zeroperl = await nodeFs.readFile('./vendor/zeroperl-1.0.0.wasm');
+    if (zeroperl instanceof Buffer) {
+      return new Response(zeroperl, {
+        headers: { 'Content-Type': 'application/wasm' },
+      });
+    }
+  }
+
+  throw `Unhandled url called: ${url}`;
 });
 
 describe('readMetadata', () => {

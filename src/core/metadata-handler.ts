@@ -1,5 +1,6 @@
 import { BaseDirectory, readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { parseMetadata, writeMetadata } from '@vshirole/exiftool';
+import zeroperl from '../../vendor/zeroperl-1.0.0.wasm?url';
 import { type ExifData, type ImageInfo, exifData } from './types';
 import { aggregateExif, isMobile } from './util';
 
@@ -16,6 +17,7 @@ async function readImageMetadata({
       {
         args: [...readTags, '-json', '-c', '%+.9f'],
         transform: (data) => JSON.parse(data),
+        fetch: () => fetch(zeroperl),
       },
     );
     return exifData.parseAsync(readResult.data[0]);
@@ -42,7 +44,10 @@ async function updateImageMetadata(
   // TODO: need to update gps ref to handle south and east
   const writeResult = await writeMetadata(
     { name: filename, data: binary },
-    { tags: newData }, // TODO: probably should validate before trying to save
+    {
+      tags: newData,
+      fetch: () => fetch(zeroperl),
+    }, // TODO: probably should validate before trying to save
   );
 
   // @ts-expect-error
