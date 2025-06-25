@@ -1,11 +1,6 @@
 import { BaseDirectory, readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { parseMetadata, writeMetadata } from '@vshirole/exiftool';
-import {
-  type ExifData,
-  type ImageInfo,
-  exifData,
-  savableExifData,
-} from './types';
+import { type ExifData, type ImageInfo, exifData } from './types';
 import { aggregateExif, isMobile } from './util';
 
 async function readImageMetadata({
@@ -18,8 +13,7 @@ async function readImageMetadata({
   const readResult = await parseMetadata(
     { name: filename, data: binary },
     {
-      // might consider dropping -n to make dates and values be more enforced by exiftool
-      args: [...readTags, '-json', '-n'],
+      args: [...readTags, '-json', '-c', '%+.9f'],
       transform: (data) => JSON.parse(data),
     },
   );
@@ -42,9 +36,10 @@ async function updateImageMetadata(
 ) {
   const binary = await readFile(path);
 
+  // TODO: need to update gps ref to handle south and east
   const writeResult = await writeMetadata(
     { name: filename, data: binary },
-    { tags: savableExifData(newData), extraArgs: ['-n'] }, // TODO: probably should validate before trying to save
+    { tags: newData }, // TODO: probably should validate before trying to save
   );
 
   // @ts-expect-error
