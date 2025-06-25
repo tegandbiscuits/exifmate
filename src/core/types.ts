@@ -132,6 +132,7 @@ export const exifData = z.object({
     .meta({ realTag: 'PixelYDimension' }),
   XResolution: z.coerce.number().optional(),
   YResolution: z.coerce.number().optional(),
+  // TODO: probably need to set ref
   GPSLatitude: z.coerce.number().optional(),
   GPSLongitude: z.coerce.number().optional(),
 });

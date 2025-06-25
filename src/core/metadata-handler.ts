@@ -10,15 +10,18 @@ async function readImageMetadata({
   const binary = await readFile(path);
   const readTags = exifData.keyof().options.map((tag) => `-${tag}`);
 
-  const readResult = await parseMetadata(
-    { name: filename, data: binary },
-    {
-      args: [...readTags, '-json', '-c', '%+.9f'],
-      transform: (data) => JSON.parse(data),
-    },
-  );
-
-  return exifData.parseAsync(readResult.data[0]);
+  try {
+    const readResult = await parseMetadata(
+      { name: filename, data: binary },
+      {
+        args: [...readTags, '-json', '-c', '%+.9f'],
+        transform: (data) => JSON.parse(data),
+      },
+    );
+    return exifData.parseAsync(readResult.data[0]);
+  } catch (err) {
+    throw new Error(`Failed to read exif data for ${path}: ${err}`);
+  }
 }
 
 export async function readMetadata(
@@ -58,7 +61,7 @@ async function updateImageMetadata(
       baseDir: BaseDirectory.Document,
     });
   } else {
-    writeFile(path, writeResult.data);
+    await writeFile(path, writeResult.data);
   }
 }
 

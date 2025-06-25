@@ -5,6 +5,7 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "vite",
+    "test": "vitest",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
@@ -43,11 +44,13 @@
     "@vitejs/plugin-react-swc": "^3.9.0",
     "electron": "^36.3.2",
     "globals": "^16.0.0",
+    "memfs": "^4.17.2",
     "postcss": "^8.5.6",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
   }
 }
