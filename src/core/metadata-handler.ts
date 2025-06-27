@@ -1,5 +1,5 @@
 import { BaseDirectory, readFile, writeFile } from '@tauri-apps/plugin-fs';
-import { parseMetadata, writeMetadata } from '@vshirole/exiftool';
+import { parseMetadata, writeMetadata } from '@uswriting/exiftool';
 import zeroperl from '../../vendor/zeroperl-1.0.0.wasm?url';
 import { type ExifData, type ImageInfo, exifData } from './types';
 import { aggregateExif, isMobile } from './util';
@@ -42,12 +42,11 @@ async function updateImageMetadata(
   const binary = await readFile(path);
 
   // TODO: need to update gps ref to handle south and east
+  // TODO: probably should validate before trying to save
   const writeResult = await writeMetadata(
     { name: filename, data: binary },
-    {
-      tags: newData,
-      fetch: () => fetch(zeroperl),
-    }, // TODO: probably should validate before trying to save
+    newData,
+    { fetch: () => fetch(zeroperl) },
   );
 
   // @ts-expect-error
@@ -61,12 +60,14 @@ async function updateImageMetadata(
     throw new Error(`Failed to set metadata: ${writeResult.error}`);
   }
 
+  const data = new Uint8Array(writeResult.data);
+
   if (isMobile()) {
-    await writeFile(filename, writeResult.data, {
+    await writeFile(filename, data, {
       baseDir: BaseDirectory.Document,
     });
   } else {
-    await writeFile(path, writeResult.data);
+    await writeFile(path, data);
   }
 }
 

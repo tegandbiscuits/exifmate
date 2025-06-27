@@ -1093,6 +1093,11 @@
   dependencies:
     "@types/node" "*"
 
+"@uswriting/exiftool@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@uswriting/exiftool/-/exiftool-1.0.4.tgz#d45ad7996de54882f5a603dc8d1170076b8b7932"
+  integrity sha512-oNDWXpxGGaEUiiMZyTzAE4DJbUhjFi/vO18bo0xEHZaROZMVshdcd1VN22xaLVgyF8oKVWJCWgjBie5D5HHGgQ==
+
 "@vanilla-extract/babel-plugin-debug-ids@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@vanilla-extract/babel-plugin-debug-ids/-/babel-plugin-debug-ids-1.2.2.tgz#0bcb26614d8c6c4c0d95f8f583d838ce71294633"
@@ -1249,11 +1254,6 @@
     "@vitest/pretty-format" "3.2.4"
     loupe "^3.1.4"
     tinyrainbow "^2.0.0"
-
-"@vshirole/exiftool@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@vshirole/exiftool/-/exiftool-1.0.0.tgz#a912ccfbde71adc72ea1a39523ccac69bd6350eb"
-  integrity sha512-MS4FINsjyvaUdK4iAzyRGVIXwHOPpPUQfvrEy4WrpLKcbyrszL2DTkAYT9pcpLv+rL75IfUnBhTYCdvKy87buw==
 
 acorn-walk@^8.1.1:
   version "8.3.4"
