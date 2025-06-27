@@ -1,61 +1,104 @@
-import { Fieldset, Stack, rem } from '@mantine/core';
+import { Fieldset, Group, Stack } from '@mantine/core';
 import { IconMapPinFilled } from '@tabler/icons-react';
+import { load } from '@tauri-apps/plugin-store';
+import type { MapLibreEvent } from 'maplibre-gl';
+import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import MapGL, { Marker } from 'react-map-gl/maplibre';
 import type { ExifData } from '../core/types';
 import ExifInput from './ExifInput';
+import { mapContainerStyles } from './LocationTab.css';
 
-const LONDON_LOC = [51.5, 0] as const;
+interface Loc {
+  lat: number;
+  lng: number;
+  zoom: number;
+}
+const LONDON_LOC: Loc = { lat: 51.5, lng: 0, zoom: 12 } as const;
 
-function LocationTab() {
+function TheMap() {
+  const [initialLoc, setInitialLoc] = useState<Loc | undefined>();
   const {
     setValue,
-    getValues,
     watch,
     formState: { disabled },
   } = useFormContext<ExifData>();
-  // TODO: would be nice if this could be the last centered place instead of London
-  const [initialLat, initialLon] = getValues(['GPSLatitude', 'GPSLongitude']);
+
+  useEffect(() => {
+    load('state.json')
+      .then((store) => store.get<Loc>('initialLoc'))
+      .then((savedInitialLoc) => {
+        setInitialLoc(savedInitialLoc ?? LONDON_LOC);
+      });
+  }, []);
+
+  const onMapIdle = useCallback((e: MapLibreEvent) => {
+    load('state.json')
+      .then((store) => {
+        const newInitialLoc: Loc = {
+          ...e.target.getCenter(),
+          zoom: e.target.getZoom(),
+        };
+        return store.set('initialLoc', newInitialLoc);
+      })
+      .catch((err) => {
+        console.error('Failed to save new initial map location:', err);
+      });
+  }, []);
+
+  if (!initialLoc) {
+    return <p>loading</p>;
+  }
 
   return (
-    <div>
-      <MapGL
-        initialViewState={{
-          latitude: initialLat,
-          longitude: initialLon,
-          zoom: 12,
-        }}
-        style={{ height: rem(200) }}
-        mapStyle="https://tiles.openfreemap.org/styles/bright"
-        onLoad={(m) => {
-          m.target.setCenter({
-            lat: initialLat ?? LONDON_LOC[0],
-            lon: initialLon ?? LONDON_LOC[1],
-          });
-        }}
-        onClick={({ lngLat: { lat, lng } }) => {
-          if (!disabled) {
-            setValue('GPSLatitude', lat);
-            setValue('GPSLongitude', lng);
-          }
-        }}
+    <MapGL
+      initialViewState={{
+        latitude: initialLoc.lat,
+        longitude: initialLoc.lng,
+        zoom: initialLoc.zoom,
+      }}
+      mapStyle="https://tiles.openfreemap.org/styles/bright"
+      onLoad={(m) => {
+        m.target.setCenter({
+          lat: initialLoc.lat,
+          lng: initialLoc.lng,
+        });
+        m.target.setZoom(initialLoc.zoom);
+      }}
+      onClick={({ lngLat: { lat, lng } }) => {
+        if (!disabled) {
+          setValue('GPSLatitude', lat);
+          setValue('GPSLongitude', lng);
+        }
+      }}
+      onIdle={onMapIdle}
+    >
+      <Marker
+        latitude={watch('GPSLatitude') ?? 0}
+        longitude={watch('GPSLongitude') ?? 0}
+        anchor="bottom"
       >
-        <Marker
-          latitude={watch('GPSLatitude') ?? 0}
-          longitude={watch('GPSLongitude') ?? 0}
-          anchor="bottom"
-        >
-          <IconMapPinFilled />
-        </Marker>
-      </MapGL>
+        <IconMapPinFilled />
+      </Marker>
+    </MapGL>
+  );
+}
+
+function LocationTab() {
+  return (
+    <Stack h="100%">
+      <div className={mapContainerStyles}>
+        <TheMap />
+      </div>
 
       <Fieldset mt="lg" legend="GPS">
-        <Stack gap="xs">
+        <Group gap="xs">
+          {/* TODO: need to handle NaN input */}
           <ExifInput tagName="GPSLatitude" />
           <ExifInput tagName="GPSLongitude" />
-        </Stack>
+        </Group>
       </Fieldset>
-    </div>
+    </Stack>
   );
 }
 

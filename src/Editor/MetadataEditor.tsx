@@ -131,7 +131,7 @@ function MetadataEditor() {
                     <ExifTab />
                   </Tabs.Panel>
 
-                  <Tabs.Panel value="gps">
+                  <Tabs.Panel value="gps" style={{ height: '100%' }}>
                     <LocationTab />
                   </Tabs.Panel>
                 </Box>

@@ -1,6 +1,7 @@
 import { NativeSelect, TextInput } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
 import { type ExifData, exifData } from '../core/types';
+import { baseInputStyles } from './ExifInput.css';
 
 interface Props {
   tagName: keyof typeof exifData.shape;
@@ -38,6 +39,7 @@ function ExifInput({ tagName }: Props) {
 
   return (
     <TextInput
+      className={baseInputStyles}
       type={isDateInput ? 'datetime-local' : 'text'}
       step={isDateInput ? 1 : undefined}
       label={tagName}

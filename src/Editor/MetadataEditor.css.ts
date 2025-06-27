@@ -11,10 +11,10 @@ export const formStyles = style({
 });
 
 export const tabContainerStyles = style({
-  // flexDirection: 'column',
   overflow: 'clip',
 });
 
 export const tabContentStyles = style({
   overflow: 'auto',
+  height: '100%',
 });
