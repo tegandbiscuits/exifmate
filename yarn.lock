@@ -937,6 +937,13 @@
   dependencies:
     "@tauri-apps/api" "^2.6.0"
 
+"@tauri-apps/plugin-window-state@~2":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/plugin-window-state/-/plugin-window-state-2.3.0.tgz#fab4f6af7fa0de32c2974c7de6e665c0f226449f"
+  integrity sha512-BfhM0gm6jsF+VyYeOZ3eNqDfRJ2YPMh0a5qesD8AizVGv7wVB3cGLqh6EaeMpGl7y6kP9lvEMYkDRHuqKbcsgw==
+  dependencies:
+    "@tauri-apps/api" "^2.6.0"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.11.tgz#6ee46400685f130e278128c7b38b7e031ff5b2f2"

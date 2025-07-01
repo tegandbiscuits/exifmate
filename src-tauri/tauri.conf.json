@@ -14,7 +14,8 @@
       {
         "title": "exifmate",
         "width": 1100,
-        "height": 700
+        "height": 700,
+        "visible": false
       }
     ],
     "security": {
