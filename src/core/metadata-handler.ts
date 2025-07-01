@@ -20,6 +20,9 @@ async function readImageMetadata({
         fetch: () => fetch(zeroperl),
       },
     );
+
+    // TODO: handle this separately from reading
+    // (maybe be more graceful about invalid data too)
     return exifData.parseAsync(readResult.data[0]);
   } catch (err) {
     throw new Error(`Failed to read exif data for ${path}: ${err}`);
