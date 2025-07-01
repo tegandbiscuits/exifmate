@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Flex, Stack, Title } from '@mantine/core';
+import { ActionIcon, Box, Divider, Flex, Stack, Title } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import MetadataEditor from '../Editor/MetadataEditor';
@@ -43,7 +43,9 @@ function Shell() {
           </Box>
         </Panel>
 
-        <PanelResizeHandle />
+        <PanelResizeHandle>
+          <Divider orientation="vertical" size="xs" h="100%" />
+        </PanelResizeHandle>
 
         <Panel className={editorPanelStyles} defaultSize={35}>
           <MetadataEditor />
