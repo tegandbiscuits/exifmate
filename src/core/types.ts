@@ -2,11 +2,14 @@ import { z } from 'zod/v4';
 import dayjs from './dayjs';
 
 // For some reason the `-dateFormat` flag wasn't getting respected
-const exifdatetime = z
-  .string()
-  .transform((val) => dayjs.utc(val, 'YYYY:MM:DD HH:mm:ss'))
-  .refine((d) => d.isValid(), { error: 'Invalid date format' })
-  .transform((d) => d.format('YYYY-MM-DD HH:mm:ss'));
+const exifdatetime = z.string().transform((val) => {
+  const date = dayjs.utc(val, 'YYYY:MM:DD HH:mm:ss');
+  if (date.isValid()) {
+    date.format('YYYY-MM-DD HH:mm:ss');
+  }
+
+  return undefined;
+});
 
 export interface ImageInfo {
   filename: string;
