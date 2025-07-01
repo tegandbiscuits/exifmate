@@ -3,16 +3,16 @@ import { vars } from '../theme.css';
 
 export const rootStyles = style({
   display: 'flex',
+  paddingTop: 'env(safe-area-inset-top)',
 });
 
 export const imageSelectionStyles = style({
-  height: '100vh',
   display: 'flex',
   flexDirection: 'column',
 });
 
 export const editorPanelStyles = style({
-  height: '100vh',
+  paddingBottom: 'env(safe-area-inset-bottom)',
 });
 
 export const titlebarStyles = style({
@@ -24,4 +24,5 @@ export const titlebarStyles = style({
 
 export const imageGridPanelStyles = style({
   overflow: 'auto',
+  flexGrow: 1,
 });

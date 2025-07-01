@@ -82,108 +82,106 @@ function MetadataEditor() {
     );
   }
 
-  return (
-    <Stack h="100%" gap={0}>
-      <Box p="md">
-        <Title order={2} size="xl">
-          {selectedImages[0]?.filename}
-        </Title>
-      </Box>
-
-      {loadingStatus === 'active' && (
-        <Center h="100%">
-          <Stack align="center">
-            <Loader />
-            <Text c="dimmed">Loading Metadata...</Text>
-          </Stack>
-        </Center>
-      )}
-
-      {loadingStatus === 'errored' && (
-        <Center h="100%">
-          <Alert color="red" variant="filled">
-            Error Loading Metadata
-          </Alert>
-        </Center>
-      )}
-
-      {loadingStatus === 'idle' && exif !== null && (
-        <Stack gap={0} pos="relative" className={formContainerStyles}>
-          <LoadingOverlay
-            visible={form.formState.isSubmitting}
-            overlayProps={{ blur: 2 }}
-          />
-
-          <FormProvider {...form}>
-            <form
-              id="metadata-form"
-              className={formStyles}
-              onSubmit={form.handleSubmit(saveMetadata)}
-            >
-              <Tabs h="100%" defaultValue="exif" className={tabContainerStyles}>
-                <Tabs.List>
-                  <Tabs.Tab value="exif">EXIF</Tabs.Tab>
-                  <Tabs.Tab value="gps">Location</Tabs.Tab>
-                </Tabs.List>
-
-                <Box py="sm" px="md" className={tabContentStyles}>
-                  <Tabs.Panel value="exif">
-                    <ExifTab />
-                  </Tabs.Panel>
-
-                  <Tabs.Panel value="gps" style={{ height: '100%' }}>
-                    <LocationTab />
-                  </Tabs.Panel>
-                </Box>
-              </Tabs>
-            </form>
-          </FormProvider>
-
-          <div>
-            <Divider />
-
-            <Group p="md" justify="space-between">
-              {!isEditing && (
-                <Button
-                  type="button"
-                  title="Edit"
-                  leftSection={<IconEdit size={16} />}
-                  onClick={() => setIsEditing(true)}
-                  size="xs"
-                >
-                  Edit
-                </Button>
-              )}
-
-              {isEditing && (
-                <>
-                  <Button
-                    type="reset"
-                    variant="default"
-                    leftSection={<IconCancel size={16} />}
-                    size="xs"
-                    onClick={() => {
-                      setIsEditing(false);
-                      form.reset();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    form="metadata-form"
-                    leftSection={<IconCheck size={16} />}
-                    size="xs"
-                  >
-                    Save
-                  </Button>
-                </>
-              )}
-            </Group>
-          </div>
+  if (loadingStatus === 'active') {
+    return (
+      <Center h="100%">
+        <Stack align="center">
+          <Loader />
+          <Text c="dimmed">Loading Metadata...</Text>
         </Stack>
-      )}
+      </Center>
+    );
+  }
+
+  if (loadingStatus === 'errored') {
+    return (
+      <Center h="100%">
+        <Alert color="red" variant="filled">
+          Error Loading Metadata
+        </Alert>
+      </Center>
+    );
+  }
+
+  return (
+    <Stack gap={0} pos="relative" className={formContainerStyles}>
+      <LoadingOverlay
+        visible={form.formState.isSubmitting}
+        overlayProps={{ blur: 2 }}
+      />
+
+      <FormProvider {...form}>
+        <form
+          id="metadata-form"
+          className={formStyles}
+          onSubmit={form.handleSubmit(saveMetadata)}
+        >
+          <Tabs
+            // h="100%"
+            defaultValue="exif"
+            className={tabContainerStyles}
+          >
+            <Tabs.List>
+              <Tabs.Tab value="exif">EXIF</Tabs.Tab>
+              <Tabs.Tab value="gps">Location</Tabs.Tab>
+            </Tabs.List>
+
+            <Box py="sm" px="md" className={tabContentStyles}>
+              <Tabs.Panel value="exif">
+                <ExifTab />
+              </Tabs.Panel>
+
+              <Tabs.Panel value="gps" style={{ height: '100%' }}>
+                <LocationTab />
+              </Tabs.Panel>
+            </Box>
+
+            <div>
+              <Divider />
+
+              <Group p="md" justify="space-between">
+                {!isEditing && (
+                  <Button
+                    type="button"
+                    title="Edit"
+                    leftSection={<IconEdit size={16} />}
+                    onClick={() => setIsEditing(true)}
+                    size="xs"
+                  >
+                    Edit
+                  </Button>
+                )}
+
+                {isEditing && (
+                  <>
+                    <Button
+                      type="reset"
+                      variant="default"
+                      leftSection={<IconCancel size={16} />}
+                      size="xs"
+                      onClick={() => {
+                        setIsEditing(false);
+                        form.reset();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      type="submit"
+                      form="metadata-form"
+                      leftSection={<IconCheck size={16} />}
+                      size="xs"
+                    >
+                      Save
+                    </Button>
+                  </>
+                )}
+              </Group>
+            </div>
+          </Tabs>
+        </form>
+      </FormProvider>
     </Stack>
   );
 }

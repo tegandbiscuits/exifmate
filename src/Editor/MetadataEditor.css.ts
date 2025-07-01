@@ -1,20 +1,19 @@
 import { style } from '@vanilla-extract/css';
 
 export const formContainerStyles = style({
-  flexGrow: 1,
-  overflow: 'clip',
+  height: '100%',
 });
 
 export const formStyles = style({
-  flexGrow: 1,
-  overflow: 'auto',
+  height: '100%',
 });
 
 export const tabContainerStyles = style({
-  overflow: 'clip',
+  height: '100%',
+  justifyContent: 'space',
 });
 
 export const tabContentStyles = style({
+  flexGrow: 1,
   overflow: 'auto',
-  height: '100%',
 });

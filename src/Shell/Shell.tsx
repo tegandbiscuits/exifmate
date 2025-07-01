@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Flex, Title } from '@mantine/core';
+import { ActionIcon, Box, Flex, Stack, Title } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import MetadataEditor from '../Editor/MetadataEditor';
@@ -14,38 +14,42 @@ import {
 
 function Shell() {
   return (
-    <PanelGroup direction="horizontal" className={rootStyles}>
-      <Panel className={imageSelectionStyles} defaultSize={65}>
-        <Flex
-          direction="row"
-          align="center"
-          justify="space-between"
-          className={titlebarStyles}
+    <Stack h="100vh" gap={0}>
+      <Flex
+        direction="row"
+        align="center"
+        justify="space-between"
+        className={titlebarStyles}
+      >
+        <Title order={1} size="h2">
+          Images
+        </Title>
+
+        <ActionIcon
+          type="button"
+          variant="filled"
+          size="md"
+          title="Add Images"
+          onClick={() => findImages()}
         >
-          <Title order={1}>Images</Title>
+          <IconPhotoPlus />
+        </ActionIcon>
+      </Flex>
 
-          <ActionIcon
-            type="button"
-            variant="filled"
-            size="lg"
-            title="Add Images"
-            onClick={() => findImages()}
-          >
-            <IconPhotoPlus />
-          </ActionIcon>
-        </Flex>
+      <PanelGroup direction="horizontal" className={rootStyles}>
+        <Panel className={imageSelectionStyles} defaultSize={65}>
+          <Box p="lg" bg="gray.0" className={imageGridPanelStyles}>
+            <ImageGrid />
+          </Box>
+        </Panel>
 
-        <Box h="100%" p="lg" bg="gray.0" className={imageGridPanelStyles}>
-          <ImageGrid />
-        </Box>
-      </Panel>
+        <PanelResizeHandle />
 
-      <PanelResizeHandle />
-
-      <Panel className={editorPanelStyles} defaultSize={35}>
-        <MetadataEditor />
-      </Panel>
-    </PanelGroup>
+        <Panel className={editorPanelStyles} defaultSize={35}>
+          <MetadataEditor />
+        </Panel>
+      </PanelGroup>
+    </Stack>
   );
 }
 
