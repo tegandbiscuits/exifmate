@@ -32,19 +32,21 @@ const ImageGrid = () => {
             onClick={(e) => {
               handleImageSelection(e, image);
             }}
+            style={{ flexGrow: 1 }}
           >
             <Card
-              key={image.filename}
               shadow="md"
               className={isSelected ? selectedCardStyles : undefined}
+              h="100%"
             >
               <Card.Section>
                 <Image
                   src={image.assetUrl}
                   fit="contain"
                   alt={image.filename}
-                  w={rem(200)}
-                  h={rem(200)}
+                  mx="auto"
+                  w={rem(225)}
+                  h={rem(225)}
                 />
               </Card.Section>
 
