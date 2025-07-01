@@ -94,6 +94,7 @@ function LocationTab() {
       <Fieldset mt="lg" legend="GPS">
         <Group gap="xs">
           {/* TODO: need to handle NaN input */}
+          {/* TODO: this isn't updating the map pin :( */}
           <ExifInput tagName="GPSLatitude" />
           <ExifInput tagName="GPSLongitude" />
         </Group>
