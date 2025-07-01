@@ -13,6 +13,9 @@ export const imageSelectionStyles = style({
 
 export const editorPanelStyles = style({
   paddingBottom: 'env(safe-area-inset-bottom)',
+  [vars.darkSelector]: {
+    backgroundColor: vars.colors.dark.light,
+  },
 });
 
 export const titlebarStyles = style({
@@ -25,4 +28,7 @@ export const titlebarStyles = style({
 export const imageGridPanelStyles = style({
   overflow: 'auto',
   flexGrow: 1,
+  [vars.lightSelector]: {
+    backgroundColor: vars.colors.gray.light,
+  },
 });

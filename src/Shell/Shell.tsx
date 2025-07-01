@@ -38,7 +38,7 @@ function Shell() {
 
       <PanelGroup direction="horizontal" className={rootStyles}>
         <Panel className={imageSelectionStyles} defaultSize={65}>
-          <Box p="lg" bg="gray.0" className={imageGridPanelStyles}>
+          <Box p="lg" className={imageGridPanelStyles}>
             <ImageGrid />
           </Box>
         </Panel>

@@ -11,7 +11,6 @@ import {
   Stack,
   Tabs,
   Text,
-  Title,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
@@ -116,11 +115,7 @@ function MetadataEditor() {
           className={formStyles}
           onSubmit={form.handleSubmit(saveMetadata)}
         >
-          <Tabs
-            // h="100%"
-            defaultValue="exif"
-            className={tabContainerStyles}
-          >
+          <Tabs defaultValue="exif" className={tabContainerStyles}>
             <Tabs.List>
               <Tabs.Tab value="exif">EXIF</Tabs.Tab>
               <Tabs.Tab value="gps">Location</Tabs.Tab>

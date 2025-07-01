@@ -1,6 +1,6 @@
 import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
 import { useImageSelection } from '../ImageContext';
-import { containerStyles } from './ImageGrid.css';
+import { containerStyles, selectedCardStyles } from './ImageGrid.css';
 
 /*
  * I think this'll go slow if the images are large; need to test.
@@ -36,7 +36,7 @@ const ImageGrid = () => {
             <Card
               key={image.filename}
               shadow="md"
-              bg={isSelected ? 'gray.4' : undefined}
+              className={isSelected ? selectedCardStyles : undefined}
             >
               <Card.Section>
                 <Image
