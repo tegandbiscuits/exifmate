@@ -5,7 +5,7 @@ import dayjs from './dayjs';
 const exifdatetime = z.string().transform((val) => {
   const date = dayjs.utc(val, 'YYYY:MM:DD HH:mm:ss');
   if (date.isValid()) {
-    date.format('YYYY-MM-DD HH:mm:ss');
+    return date.format('YYYY-MM-DD HH:mm:ss');
   }
 
   return undefined;
