@@ -31,6 +31,7 @@ import useExif from './useExif';
 
 function MetadataEditor() {
   const { selectedImages } = useImageSelection();
+  const [tab, setTab] = useState<string | null>('exif');
   const { loadingStatus, exif } = useExif(selectedImages);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -115,7 +116,7 @@ function MetadataEditor() {
           className={formStyles}
           onSubmit={form.handleSubmit(saveMetadata)}
         >
-          <Tabs defaultValue="exif" className={tabContainerStyles}>
+          <Tabs value={tab} onChange={setTab} className={tabContainerStyles}>
             <Tabs.List>
               <Tabs.Tab value="exif">EXIF</Tabs.Tab>
               <Tabs.Tab value="gps">Location</Tabs.Tab>
