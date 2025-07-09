@@ -32,7 +32,7 @@ import useExif from './useExif';
 function MetadataEditor() {
   const { selectedImages } = useImageSelection();
   const [tab, setTab] = useState<string | null>('exif');
-  const { loadingStatus, exif } = useExif(selectedImages);
+  const { loadingStatus, exif, saveMetadata } = useExif(selectedImages);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -53,26 +53,6 @@ function MetadataEditor() {
       setIsEditing(false);
     }
   }, [selectedImages]);
-
-  const saveMetadata = useCallback(
-    async (newExif: ExifData) => {
-      if (selectedImages.length === 0) {
-        return;
-      }
-
-      setIsEditing(false);
-      try {
-        await updateMetadata(selectedImages, newExif);
-      } catch (err) {
-        console.log('err', err);
-        notifications.show({
-          message: `Failed saving ${selectedImages[0].filename}`,
-          color: 'red',
-        });
-      }
-    },
-    [selectedImages],
-  );
 
   if (selectedImages.length === 0) {
     return (
@@ -114,7 +94,10 @@ function MetadataEditor() {
         <form
           id="metadata-form"
           className={formStyles}
-          onSubmit={form.handleSubmit(saveMetadata)}
+          onSubmit={form.handleSubmit(async (newExif: ExifData) => {
+            setIsEditing(false);
+            await saveMetadata(newExif);
+          })}
         >
           <Tabs value={tab} onChange={setTab} className={tabContainerStyles}>
             <Tabs.List>
