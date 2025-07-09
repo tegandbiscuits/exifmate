@@ -1,7 +1,7 @@
+import { notifications } from '@mantine/notifications';
 import { useCallback, useEffect, useState } from 'react';
 import { readMetadata, updateMetadata } from '../core/metadata-handler';
 import type { ExifData, ImageInfo } from '../core/types';
-import { notifications } from '@mantine/notifications';
 
 type Activity = 'idle' | 'active' | 'errored';
 
