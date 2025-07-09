@@ -109,6 +109,10 @@ describe('readMetadata', () => {
   describe('when there is warnings from reading images', () => {
     it.todo('can notify of warnings parsing images');
   });
+
+  describe('when there is invalid metadata', () => {
+    it.todo('warns the user instead of erroring');
+  });
 });
 
 describe('updateMetadata', () => {
@@ -136,5 +140,11 @@ describe('updateMetadata', () => {
     it.todo('indicates the error');
   });
 
-  it.todo('formats to valid exif dates');
+  describe('when there is a warning', () => {
+    it.todo('warns of the warning')
+  });
+
+  describe('when GPSLatitude or GPSLongitude is set', () => {
+    it.todo('updates the respective ref');
+  });
 });
