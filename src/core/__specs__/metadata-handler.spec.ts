@@ -141,7 +141,7 @@ describe('updateMetadata', () => {
   });
 
   describe('when there is a warning', () => {
-    it.todo('warns of the warning')
+    it.todo('warns of the warning');
   });
 
   describe('when GPSLatitude or GPSLongitude is set', () => {
