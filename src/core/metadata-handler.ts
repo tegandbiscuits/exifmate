@@ -20,6 +20,9 @@ async function readImageMetadata({
         fetch: () => fetch(zeroperl),
       },
     );
+
+    // TODO: handle this separately from reading
+    // (maybe be more graceful about invalid data too)
     return exifData.parseAsync(readResult.data[0]);
   } catch (err) {
     throw new Error(`Failed to read exif data for ${path}: ${err}`);
@@ -41,11 +44,23 @@ async function updateImageMetadata(
 ) {
   const binary = await readFile(path);
 
-  // TODO: need to update gps ref to handle south and east
+  // This might be better as not a loop
+  const tagsToSave: Record<string, string | number> = {};
+
+  for (const [tag, val] of Object.entries(newData)) {
+    if (tag === 'GPSLatitude') {
+      tagsToSave['GPSLatitude*'] = val;
+    } else if (tag === 'GPSLongitude') {
+      tagsToSave['GPSLongitude*'] = val;
+    } else {
+      tagsToSave[tag] = val;
+    }
+  }
+
   // TODO: probably should validate before trying to save
   const writeResult = await writeMetadata(
     { name: filename, data: binary },
-    newData,
+    tagsToSave,
     { fetch: () => fetch(zeroperl) },
   );
 

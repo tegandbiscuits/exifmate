@@ -1,12 +1,19 @@
 import { z } from 'zod/v4';
 import dayjs from './dayjs';
 
+// TODO: maybe better handle when datetime-local typed in
+// gives ex. 2024-12-26T15:10 which is said to be invalid
+//
 // For some reason the `-dateFormat` flag wasn't getting respected
-const exifdatetime = z
-  .string()
-  .transform((val) => dayjs.utc(val, 'YYYY:MM:DD HH:mm:ss'))
-  .refine((d) => d.isValid(), { error: 'Invalid date format' })
-  .transform((d) => d.format('YYYY-MM-DD HH:mm:ss'));
+const exifdatetime = z.string().transform((val) => {
+  const date = dayjs.utc(val, 'YYYY:MM:DD HH:mm:ss');
+  if (date.isValid()) {
+    return date.format('YYYY-MM-DD HH:mm:ss');
+  }
+
+  // returning the raw value lets exiftool handle the format from the datetime-local input
+  return val;
+});
 
 export interface ImageInfo {
   filename: string;
