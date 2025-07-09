@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -35,7 +36,15 @@ export default defineConfig(async () => ({
     },
   },
 
+  resolve: {
+    alias: {
+      'test-support': resolve(__dirname, 'test-support'),
+    },
+  },
+
   test: {
     globals: true,
+    setupFiles: ['./test-support/vitest-setup.ts'],
+    environment: 'jsdom',
   },
 }));
