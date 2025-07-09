@@ -12,12 +12,10 @@ import {
   Tabs,
   Text,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useImageSelection } from '../ImageContext';
-import { updateMetadata } from '../core/metadata-handler';
 import { type ExifData, exifData } from '../core/types';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
