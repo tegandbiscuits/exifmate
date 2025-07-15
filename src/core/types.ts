@@ -30,25 +30,36 @@ export const exifData = z.object({
   Software: z.string().or(z.number()).optional(),
   // UserComment: z.string(), // undef
   DateTimeOriginal: exifdatetime.optional(),
-  CreateDate: exifdatetime.optional().meta({
-    realTag: 'DateTimeDigitized',
-  }),
+  CreateDate: exifdatetime
+    .meta({
+      description: 'also called DateTimeDigitized',
+    })
+    .optional(),
   ModifyDate: exifdatetime.optional(),
   Make: z.string().optional(),
   Model: z.string().optional(),
-  SerialNumber: z.string().optional().meta({
-    realTag: 'BodySerialNumber',
-  }),
+  SerialNumber: z
+    .string()
+    .meta({
+      description: 'also called BodySerialNumber',
+    })
+    .optional(),
   ISO: z.coerce.number().optional(),
   FNumber: z.coerce.string().optional(),
   // ShutterSpeed: z.number().optional(), // doesn't seem to want value at end // TODO: need to not save this
   FocalLength: z.string().optional(),
-  FocalLengthIn35mmFormat: z.string().optional().meta({
-    realTag: 'FocalLengthIn35mmFilm',
-  }), // todo: is this able to be determined from focal length?
-  ExposureCompensation: z.coerce.number().optional().meta({
-    realTag: 'ExposureBiasValue',
-  }),
+  FocalLengthIn35mmFormat: z
+    .string()
+    .meta({
+      description: 'also called FocalLengthIn35mmFilm',
+    })
+    .optional(), // todo: is this able to be determined from focal length?
+  ExposureCompensation: z.coerce
+    .number()
+    .meta({
+      description: 'also called ExposureBiasValue',
+    })
+    .optional(),
   Flash: z
     .enum([
       'No Flash',
@@ -131,12 +142,12 @@ export const exifData = z.object({
     .optional(),
   ExifImageWidth: z.coerce
     .number()
-    .optional()
-    .meta({ realTag: 'PixelXDimension' }),
+    .meta({ description: 'also called PixelXDimension' })
+    .optional(),
   ExifImageHeight: z.coerce
     .number()
-    .optional()
-    .meta({ realTag: 'PixelYDimension' }),
+    .meta({ description: 'also called PixelYDimension' })
+    .optional(),
   XResolution: z.coerce.number().optional(),
   YResolution: z.coerce.number().optional(),
   // TODO: probably need to set ref

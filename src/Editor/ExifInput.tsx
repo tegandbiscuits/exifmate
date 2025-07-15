@@ -1,5 +1,6 @@
 import { NativeSelect, TextInput } from '@mantine/core';
 import { useFormContext } from 'react-hook-form';
+import { ZodEnum } from 'zod/v4';
 import { type ExifData, exifData } from '../core/types';
 import { baseInputStyles } from './ExifInput.css';
 
@@ -8,25 +9,19 @@ interface Props {
 }
 
 function ExifInput({ tagName }: Props) {
-  const { register, formState } = useFormContext<ExifData>();
-  const tagMeta = exifData.shape[tagName].meta();
+  const { register, formState, watch } = useFormContext<ExifData>();
+  const tag = exifData.shape[tagName].unwrap();
+  const description = tag.meta()?.description;
 
-  let description: string | undefined;
-  if (tagMeta && typeof tagMeta.realTag === 'string') {
-    description = tagMeta.realTag;
-  }
-
-  if (tagMeta?.options && typeof tagMeta.options === 'object') {
-    const data = Object.keys(tagMeta.options).map((label) => ({
-      label,
-      value: String((tagMeta.options as Record<string, number>)[label]),
-    }));
+  if (tag instanceof ZodEnum) {
+    const options = [''].concat(tag.options);
 
     return (
       <NativeSelect
         label={tagName}
         description={description}
-        data={[{ label: '', value: '' }, ...data]}
+        data={options}
+        error={formState.errors[tagName]?.message}
         {...register(tagName)}
       />
     );
