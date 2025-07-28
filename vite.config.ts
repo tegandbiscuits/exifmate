@@ -46,5 +46,6 @@ export default defineConfig(async () => ({
     globals: true,
     setupFiles: ['./test-support/vitest-setup.ts'],
     environment: 'jsdom',
+    clearScreen: true,
   },
 }));
