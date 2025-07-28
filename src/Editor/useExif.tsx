@@ -10,7 +10,6 @@ function useExif(images: ImageInfo[]) {
   const [exif, setExif] = useState<ExifData | null>(null);
 
   const fetchMetadata = useCallback(async () => {
-    console.log('fetching');
     try {
       const res = await readMetadata(images);
       setLoadingStatus('idle');
@@ -21,10 +20,14 @@ function useExif(images: ImageInfo[]) {
   }, [images]);
 
   useEffect(() => {
+    if (!images.length) {
+      return;
+    }
+
     setLoadingStatus('active');
     setExif(null);
     fetchMetadata();
-  }, [fetchMetadata]);
+  }, [fetchMetadata, images]);
 
   const saveMetadata = useCallback(
     async (newExif: ExifData) => {

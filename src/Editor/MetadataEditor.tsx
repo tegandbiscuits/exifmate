@@ -132,7 +132,7 @@ function MetadataEditor() {
                 {isEditing && (
                   <>
                     <Button
-                      type="reset"
+                      type="button"
                       variant="default"
                       leftSection={<IconCancel size={16} />}
                       size="xs"
@@ -149,6 +149,7 @@ function MetadataEditor() {
                       form="metadata-form"
                       leftSection={<IconCheck size={16} />}
                       size="xs"
+                      disabled={!form.formState.isValid}
                     >
                       Save
                     </Button>
