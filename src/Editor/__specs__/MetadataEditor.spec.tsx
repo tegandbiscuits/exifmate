@@ -1,15 +1,15 @@
+import type { load } from '@tauri-apps/plugin-store';
+import userEvent from '@testing-library/user-event';
 import {
   render,
   screen,
   waitFor,
   waitForElementToBeRemoved,
 } from 'test-support/test-utils';
-import MetadataEditor from '../MetadataEditor';
-import { useImageSelection } from '../../ImageContext';
 import type { Mock } from 'vitest';
+import { useImageSelection } from '../../ImageContext';
 import { readMetadata, updateMetadata } from '../../core/metadata-handler';
-import userEvent from '@testing-library/user-event';
-import type { load } from '@tauri-apps/plugin-store';
+import MetadataEditor from '../MetadataEditor';
 
 const useImageSelectionMock = useImageSelection as unknown as Mock<
   typeof useImageSelection

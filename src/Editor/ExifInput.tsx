@@ -9,7 +9,7 @@ interface Props {
 }
 
 function ExifInput({ tagName }: Props) {
-  const { register, formState, watch } = useFormContext<ExifData>();
+  const { register, formState } = useFormContext<ExifData>();
   const tag = exifData.shape[tagName].unwrap();
   const description = tag.meta()?.description;
 
