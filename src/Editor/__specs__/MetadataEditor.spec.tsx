@@ -38,6 +38,8 @@ vi.mock('../../ImageContext.tsx', () => ({
   }),
 }));
 
+vi.mock('react-map-gl/maplibre');
+
 describe('MetadataEditor', () => {
   afterEach(() => {
     updateMetadataMock.mockReset();
