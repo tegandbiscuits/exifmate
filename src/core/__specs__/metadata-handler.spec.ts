@@ -1,34 +1,9 @@
-import nodeFs from 'node:fs/promises';
-import type { readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { fs } from 'memfs';
 import { readMetadata, updateMetadata } from '../metadata-handler';
 import type { ImageInfo } from '../types';
 import { ImageOne, ImageTwo } from './fake-images';
 
-vi.mock(import('@tauri-apps/plugin-fs'), async (importOriginal) => {
-  const { fs } = await import('memfs');
-  const mod = await importOriginal();
-
-  const mockReadFile = vi.fn<typeof readFile>(async (path) => {
-    const data = await fs.promises.readFile(path);
-    if (data instanceof Buffer) {
-      return new Uint8Array(data);
-    }
-
-    throw new Error('File not opened as a buffer');
-  });
-
-  const mockWriteFile = vi.fn<typeof writeFile>(async (path, data) => {
-    // @ts-expect-error
-    await fs.promises.writeFile(path, data);
-  });
-
-  return {
-    ...mod,
-    readFile: mockReadFile,
-    writeFile: mockWriteFile,
-  };
-});
+vi.mock('@tauri-apps/plugin-fs');
 
 vi.mock(import('../util'), async (importOriginal) => {
   const mod = await importOriginal();
@@ -37,19 +12,6 @@ vi.mock(import('../util'), async (importOriginal) => {
     ...mod,
     isMobile: vi.fn().mockReturnValue(false),
   };
-});
-
-vi.stubGlobal('fetch', async (url: string) => {
-  if (url.includes('zeroperl-1.0.0.wasm')) {
-    const zeroperl = await nodeFs.readFile('./vendor/zeroperl-1.0.0.wasm');
-    if (zeroperl instanceof Buffer) {
-      return new Response(zeroperl, {
-        headers: { 'Content-Type': 'application/wasm' },
-      });
-    }
-  }
-
-  throw `Unhandled url called: ${url}`;
 });
 
 describe('readMetadata', () => {
@@ -109,6 +71,10 @@ describe('readMetadata', () => {
   describe('when there is warnings from reading images', () => {
     it.todo('can notify of warnings parsing images');
   });
+
+  describe('when there is invalid metadata', () => {
+    it.todo('warns the user instead of erroring');
+  });
 });
 
 describe('updateMetadata', () => {
@@ -136,5 +102,11 @@ describe('updateMetadata', () => {
     it.todo('indicates the error');
   });
 
-  it.todo('formats to valid exif dates');
+  describe('when there is a warning', () => {
+    it.todo('warns of the warning');
+  });
+
+  describe('when GPSLatitude or GPSLongitude is set', () => {
+    it.todo('updates the respective ref');
+  });
 });

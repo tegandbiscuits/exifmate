@@ -1,11 +1,11 @@
-import { Fieldset, Group, Stack } from '@mantine/core';
+import { Fieldset, Group, Skeleton, Stack } from '@mantine/core';
 import { IconMapPinFilled } from '@tabler/icons-react';
 import { load } from '@tauri-apps/plugin-store';
 import type { MapLibreEvent } from 'maplibre-gl';
 import { useCallback, useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import MapGL, { Marker } from 'react-map-gl/maplibre';
-import type { ExifData } from '../core/types';
+import { type ExifData, exifData } from '../core/types';
 import ExifInput from './ExifInput';
 import { mapContainerStyles } from './LocationTab.css';
 
@@ -47,8 +47,13 @@ function TheMap() {
   }, []);
 
   if (!initialLoc) {
-    return <p>loading</p>;
+    return <Skeleton height="100%" width="100%" title="Loading Map" />;
   }
+
+  const getLoc = (part: 'GPSLatitude' | 'GPSLongitude'): number => {
+    const val = watch(part);
+    return exifData.shape[part].safeParse(val).data ?? 0;
+  };
 
   return (
     <MapGL
@@ -74,8 +79,8 @@ function TheMap() {
       onIdle={onMapIdle}
     >
       <Marker
-        latitude={watch('GPSLatitude') ?? 0}
-        longitude={watch('GPSLongitude') ?? 0}
+        latitude={getLoc('GPSLatitude')}
+        longitude={getLoc('GPSLongitude')}
         anchor="bottom"
       >
         <IconMapPinFilled />
@@ -93,8 +98,6 @@ function LocationTab() {
 
       <Fieldset mt="lg" legend="GPS">
         <Group gap="xs">
-          {/* TODO: need to handle NaN input */}
-          {/* TODO: this isn't updating the map pin :( */}
           <ExifInput tagName="GPSLatitude" />
           <ExifInput tagName="GPSLongitude" />
         </Group>

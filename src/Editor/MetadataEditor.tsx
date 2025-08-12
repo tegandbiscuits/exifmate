@@ -12,12 +12,10 @@ import {
   Tabs,
   Text,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useImageSelection } from '../ImageContext';
-import { updateMetadata } from '../core/metadata-handler';
 import { type ExifData, exifData } from '../core/types';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
@@ -134,7 +132,7 @@ function MetadataEditor() {
                 {isEditing && (
                   <>
                     <Button
-                      type="reset"
+                      type="button"
                       variant="default"
                       leftSection={<IconCancel size={16} />}
                       size="xs"
@@ -151,6 +149,7 @@ function MetadataEditor() {
                       form="metadata-form"
                       leftSection={<IconCheck size={16} />}
                       size="xs"
+                      disabled={!form.formState.isValid}
                     >
                       Save
                     </Button>
