@@ -145,14 +145,6 @@ describe('MetadataEditor', () => {
         expect(latInput).toBeEnabled();
       });
 
-      describe('when selected image is changed', () => {
-        it.todo('persists the opened tab between image selection changing');
-
-        it.todo('disables the form');
-
-        it.todo('blanks out inputs for fields that now have no value');
-      });
-
       describe('when form changes are cancelled', () => {
         it('resets unsaved values', async () => {
           const artistInput = screen.getByLabelText(
