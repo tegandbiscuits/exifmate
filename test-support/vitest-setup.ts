@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+import nodeFs from 'node:fs/promises';
 import { vi } from 'vitest';
 
 const { getComputedStyle } = window;
@@ -26,3 +27,16 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+
+vi.stubGlobal('fetch', async (url: string) => {
+  if (url.includes('zeroperl-1.0.0.wasm')) {
+    const zeroperl = await nodeFs.readFile('./vendor/zeroperl-1.0.0.wasm');
+    if (zeroperl instanceof Buffer) {
+      return new Response(zeroperl, {
+        headers: { 'Content-Type': 'application/wasm' },
+      });
+    }
+  }
+
+  throw `Unhandled url called: ${url}`;
+});
