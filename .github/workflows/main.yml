@@ -1,0 +1,17 @@
+on: [push]
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+          
+      - run: yarn install
+      - run: yarn tsc --noEmit
+      - run: yarn lint
+      - run: yarn test
