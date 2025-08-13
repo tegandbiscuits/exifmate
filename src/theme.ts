@@ -1,4 +1,4 @@
-import { Tabs, createTheme } from '@mantine/core';
+import { createTheme, Tabs } from '@mantine/core';
 
 export default createTheme({
   components: {

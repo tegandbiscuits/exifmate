@@ -10,9 +10,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
           
-      - run: yarn install
-      - run: yarn tsc --noEmit
-      - run: yarn lint
-      - run: yarn test
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm test

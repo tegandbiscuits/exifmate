@@ -6,9 +6,9 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from 'test-support/test-utils';
-import { ImageProvider } from '../../ImageContext';
 import { ImageOne, ImageTwo } from '../../core/__specs__/fake-images';
 import type { onImagesOpened } from '../../core/events';
+import { ImageProvider } from '../../ImageContext';
 import Shell from '../Shell';
 
 vi.mock('@tauri-apps/plugin-fs');

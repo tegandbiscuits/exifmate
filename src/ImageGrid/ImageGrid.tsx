@@ -1,4 +1,4 @@
-import { Card, Flex, Image, Text, UnstyledButton, rem } from '@mantine/core';
+import { Card, Flex, Image, rem, Text, UnstyledButton } from '@mantine/core';
 import { useImageSelection } from '../ImageContext';
 import { containerStyles, selectedCardStyles } from './ImageGrid.css';
 

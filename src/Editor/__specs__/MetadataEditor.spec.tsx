@@ -7,8 +7,8 @@ import {
   waitForElementToBeRemoved,
 } from 'test-support/test-utils';
 import type { Mock } from 'vitest';
-import { useImageSelection } from '../../ImageContext';
 import { readMetadata, updateMetadata } from '../../core/metadata-handler';
+import { useImageSelection } from '../../ImageContext';
 import MetadataEditor from '../MetadataEditor';
 
 const useImageSelectionMock = useImageSelection as unknown as Mock<

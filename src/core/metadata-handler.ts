@@ -1,7 +1,7 @@
 import { BaseDirectory, readFile, writeFile } from '@tauri-apps/plugin-fs';
 import { parseMetadata, writeMetadata } from '@uswriting/exiftool';
 import zeroperl from '../../vendor/zeroperl-1.0.0.wasm?url';
-import { type ExifData, type ImageInfo, exifData } from './types';
+import { type ExifData, exifData, type ImageInfo } from './types';
 import { aggregateExif, isMobile } from './util';
 
 async function readImageMetadata({

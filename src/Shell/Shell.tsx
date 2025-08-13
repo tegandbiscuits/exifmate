@@ -1,9 +1,9 @@
 import { ActionIcon, Box, Divider, Flex, Stack, Title } from '@mantine/core';
 import { IconPhotoPlus } from '@tabler/icons-react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { findImages } from '../core/file-manager';
 import MetadataEditor from '../Editor/MetadataEditor';
 import ImageGrid from '../ImageGrid/ImageGrid';
-import { findImages } from '../core/file-manager';
 import {
   editorPanelStyles,
   imageGridPanelStyles,

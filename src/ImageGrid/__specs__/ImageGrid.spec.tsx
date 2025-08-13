@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event';
 import { render, screen } from 'test-support/test-utils';
 import type { Mock } from 'vitest';
-import { useImageSelection } from '../../ImageContext';
 import type { ImageInfo } from '../../core/types';
+import { useImageSelection } from '../../ImageContext';
 import ImageGrid from '../ImageGrid';
 
 const useImageSelectionMock = useImageSelection as unknown as Mock<
