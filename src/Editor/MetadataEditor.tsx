@@ -15,8 +15,8 @@ import {
 import { IconCancel, IconCheck, IconEdit } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useImageSelection } from '../ImageContext';
 import { type ExifData, exifData } from '../core/types';
+import { useImageSelection } from '../ImageContext';
 import ExifTab from './ExifTab';
 import LocationTab from './LocationTab';
 import {

@@ -1,4 +1,4 @@
-import { type UnlistenFn, emit, listen } from '@tauri-apps/api/event';
+import { emit, listen, type UnlistenFn } from '@tauri-apps/api/event';
 import type { ImageInfo } from './types';
 
 type onImagesOpened = (
