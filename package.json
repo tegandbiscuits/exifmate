@@ -48,7 +48,6 @@
     "@vanilla-extract/vite-plugin": "^5.0.6",
     "@vitejs/plugin-react": "^4.5.1",
     "@vitejs/plugin-react-swc": "^3.9.0",
-    "electron": "^36.3.2",
     "globals": "^16.0.0",
     "jsdom": "^26.1.0",
     "memfs": "^4.17.2",

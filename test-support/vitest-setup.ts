@@ -32,7 +32,7 @@ vi.stubGlobal('fetch', async (url: string) => {
   if (url.includes('zeroperl-1.0.0.wasm')) {
     const zeroperl = await nodeFs.readFile('./vendor/zeroperl-1.0.0.wasm');
     if (zeroperl instanceof Buffer) {
-      return new Response(zeroperl, {
+      return new Response(new Uint8Array(zeroperl), {
         headers: { 'Content-Type': 'application/wasm' },
       });
     }
