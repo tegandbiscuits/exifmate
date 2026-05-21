@@ -26,7 +26,6 @@ async function emitReport(report: ErrorReport) {
 
 describe('ErrorDetailModal', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     mockIPC(() => {}, { shouldMockEvents: true });
   });
 

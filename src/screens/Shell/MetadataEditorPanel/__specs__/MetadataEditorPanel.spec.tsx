@@ -5,7 +5,6 @@ import { ERROR_REPORTED_EVENT } from '@platform/error-reporter';
 import type { ImageInfo } from '@platform/file-manager';
 import { listen } from '@tauri-apps/api/event';
 import { mockIPC } from '@tauri-apps/api/mocks';
-import type { load } from '@tauri-apps/plugin-store';
 import {
   render as originalRender,
   type RenderOptions,
@@ -26,11 +25,7 @@ const updateMetadataMock = updateMetadata as unknown as Mock<
 const toastMock = toast as unknown as Mock<typeof toast>;
 
 vi.mock('@tauri-apps/plugin-store', () => ({
-  load: vi
-    .fn<typeof load>()
-    .mockResolvedValue(
-      new Map() as unknown as Awaited<ReturnType<typeof load>>,
-    ),
+  load: vi.fn(() => Promise.resolve(new Map())),
 }));
 
 vi.mock('@metadata-handler/read');
