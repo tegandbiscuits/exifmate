@@ -1,12 +1,14 @@
+import { Skeleton } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import type { ExifData } from '@metadata-handler/exifdata';
 import { FOCUS_ON_LOCATION_EVENT } from '@platform/menus/tools-menu';
 import { load } from '@tauri-apps/plugin-store';
-import type { MapLibreEvent } from 'maplibre-gl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import maplibregl, { type Map as MaplibreMap } from 'maplibre-gl';
+import { useEffect, useRef, useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { useFormContext } from 'react-hook-form';
 import { MdLocationPin } from 'react-icons/md';
-import MapGL, { type MapRef, Marker } from 'react-map-gl/maplibre';
+import useSWR from 'swr';
 import { z } from 'zod';
 
 const Loc = z.object({
@@ -17,32 +19,70 @@ const Loc = z.object({
 
 type Loc = z.infer<typeof Loc>;
 
-function LocationPin() {
+const DEFAULT_LOC: Loc = { lat: 0, lng: 0, zoom: 0 } as const;
+const MAP_STYLE = 'https://tiles.openfreemap.org/styles/bright';
+const INITIAL_LOC_KEY = 'initialLoc';
+const SWR_KEY = 'locationMap.initialLoc';
+
+async function loadInitialLoc(): Promise<Loc> {
+  try {
+    const store = await load('state.json');
+    const raw = await store.get(INITIAL_LOC_KEY);
+    const parsed = await Loc.safeParseAsync(raw);
+    return parsed.success ? parsed.data : DEFAULT_LOC;
+  } catch (err) {
+    console.error('Failed to load map state:', err);
+    return DEFAULT_LOC;
+  }
+}
+
+function LocationPin({ map }: { map: MaplibreMap }) {
   const { watch, getFieldState } = useFormContext<ExifData>();
   const lat = watch('GPSLatitude');
   const lon = watch('GPSLongitude');
+  const latInvalid = getFieldState('GPSLatitude').invalid;
+  const lonInvalid = getFieldState('GPSLongitude').invalid;
+  const markerRef = useRef<maplibregl.Marker | null>(null);
 
-  if (
-    getFieldState('GPSLatitude').invalid ||
-    getFieldState('GPSLongitude').invalid
-  ) {
-    return;
-  }
+  useEffect(() => {
+    const element = document.createElement('div');
+    element.innerHTML = renderToStaticMarkup(
+      <MdLocationPin color="red" size={36} />,
+    );
+    const marker = new maplibregl.Marker({ element });
+    markerRef.current = marker;
+    return () => {
+      marker.remove();
+      markerRef.current = null;
+    };
+  }, []);
 
-  if (lat === undefined || lat === null || lon === undefined || lon === null) {
-    return;
-  }
+  useEffect(() => {
+    const marker = markerRef.current;
+    if (!marker) {
+      return;
+    }
 
-  return (
-    <Marker latitude={lat} longitude={lon} anchor="bottom">
-      <MdLocationPin color="red" size={36} />
-    </Marker>
-  );
+    const hasCoords =
+      typeof lat === 'number' &&
+      typeof lon === 'number' &&
+      Number.isFinite(lat) &&
+      Number.isFinite(lon);
+
+    if (hasCoords && !latInvalid && !lonInvalid) {
+      marker.setLngLat([lon, lat]).addTo(map);
+    } else {
+      marker.remove();
+    }
+  }, [lat, lon, latInvalid, lonInvalid, map]);
+
+  return null;
 }
 
-function LocationMap() {
-  const mapRef = useRef<MapRef>(null);
-  const [initialLoc, setInitialLoc] = useState<Loc | undefined>();
+function MapView({ initialLoc }: { initialLoc: Loc }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const initialLocRef = useRef(initialLoc);
+  const [map, setMap] = useState<MaplibreMap | null>(null);
   const {
     setValue,
     getValues,
@@ -50,74 +90,98 @@ function LocationMap() {
   } = useFormContext<ExifData>();
 
   useEffect(() => {
-    load('state.json')
-      .then((store) => store.get('initialLoc'))
-      .then((raw) => Loc.safeParseAsync(raw))
-      .then((savedInitialLoc) => {
-        const DEFAULT_LOC: Loc = { lat: 0, lng: 0, zoom: 0 } as const;
-        setInitialLoc(savedInitialLoc.data ?? DEFAULT_LOC);
-      })
-      .catch((err) => {
-        console.error('Failed to load map state:', err);
-      });
-  }, []);
-
-  useTauriListener(FOCUS_ON_LOCATION_EVENT, () => {
-    if (!mapRef.current) {
+    if (!containerRef.current) {
       return;
     }
+    const instance = new maplibregl.Map({
+      container: containerRef.current,
+      style: MAP_STYLE,
+      center: [initialLocRef.current.lng, initialLocRef.current.lat],
+      zoom: initialLocRef.current.zoom,
+    });
+    setMap(instance);
+    return () => {
+      instance.remove();
+      setMap(null);
+    };
+  }, []);
 
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    const onClick = (e: { lngLat: { lat: number; lng: number } }) => {
+      if (disabled) {
+        return;
+      }
+      setValue('GPSLatitude', e.lngLat.lat, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue('GPSLongitude', e.lngLat.lng, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    };
+    map.on('click', onClick);
+    return () => {
+      map.off('click', onClick);
+    };
+  }, [map, disabled, setValue]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+    const onIdle = (e: { target: MaplibreMap }) => {
+      load('state.json')
+        .then((store) => {
+          const newInitialLoc: Loc = {
+            ...e.target.getCenter(),
+            zoom: e.target.getZoom(),
+          };
+          return store.set(INITIAL_LOC_KEY, newInitialLoc);
+        })
+        .catch((err) => {
+          console.error('Failed to save new initial map location:', err);
+        });
+    };
+    map.on('idle', onIdle);
+    return () => {
+      map.off('idle', onIdle);
+    };
+  }, [map]);
+
+  useTauriListener(FOCUS_ON_LOCATION_EVENT, () => {
+    if (!map) {
+      return;
+    }
     const [lat, lon] = getValues(['GPSLatitude', 'GPSLongitude']);
-    if (lat && lon) {
-      mapRef.current.setCenter([lon, lat]);
+    if (typeof lat === 'number' && typeof lon === 'number') {
+      map.setCenter([lon, lat]);
     }
   });
 
-  const onMapIdle = useCallback((e: MapLibreEvent) => {
-    load('state.json')
-      .then((store) => {
-        const newInitialLoc: Loc = {
-          ...e.target.getCenter(),
-          zoom: e.target.getZoom(),
-        };
-        return store.set('initialLoc', newInitialLoc);
-      })
-      .catch((err) => {
-        console.error('Failed to save new initial map location:', err);
-      });
-  }, []);
+  return (
+    <>
+      <div ref={containerRef} className="h-full w-full" />
+      {map && <LocationPin map={map} />}
+    </>
+  );
+}
 
-  if (!initialLoc) {
-    return <div className="skeleton h-full w-full" title="Loading Map"></div>;
+function LocationMap() {
+  const { data, isLoading } = useSWR(SWR_KEY, loadInitialLoc, {
+    revalidateOnFocus: false,
+  });
+
+  if (isLoading || !data) {
+    return (
+      <Skeleton aria-label="Loading Map" className="h-full w-full rounded-md" />
+    );
   }
 
-  return (
-    <MapGL
-      ref={mapRef}
-      reuseMaps
-      initialViewState={{
-        latitude: initialLoc.lat,
-        longitude: initialLoc.lng,
-        zoom: initialLoc.zoom,
-      }}
-      mapStyle="https://tiles.openfreemap.org/styles/bright"
-      onClick={({ lngLat: { lat, lng } }) => {
-        if (!disabled) {
-          setValue('GPSLatitude', lat, {
-            shouldDirty: true,
-            shouldValidate: true,
-          });
-          setValue('GPSLongitude', lng, {
-            shouldDirty: true,
-            shouldValidate: true,
-          });
-        }
-      }}
-      onIdle={onMapIdle}
-    >
-      <LocationPin />
-    </MapGL>
-  );
+  return <MapView initialLoc={data} />;
 }
 
 export default LocationMap;
