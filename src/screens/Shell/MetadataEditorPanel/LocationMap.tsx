@@ -37,6 +37,19 @@ async function loadInitialLoc(): Promise<Loc> {
   }
 }
 
+async function onIdle(e: { target: MaplibreMap }) {
+  try {
+    const store = await load('state.json');
+    const newInitialLoc: Loc = {
+      ...e.target.getCenter(),
+      zoom: e.target.getZoom(),
+    };
+    return store.set(INITIAL_LOC_KEY, newInitialLoc);
+  } catch (err) {
+    reportError('Failed to save initial map location', err, true);
+  }
+}
+
 function LocationPin({ map }: { map: MaplibreMap }) {
   const { watch, getFieldState } = useFormContext<ExifData>();
   const lat = watch('GPSLatitude');
@@ -134,19 +147,6 @@ function MapView({ initialLoc }: { initialLoc: Loc }) {
     if (!map) {
       return;
     }
-    const onIdle = (e: { target: MaplibreMap }) => {
-      load('state.json')
-        .then((store) => {
-          const newInitialLoc: Loc = {
-            ...e.target.getCenter(),
-            zoom: e.target.getZoom(),
-          };
-          return store.set(INITIAL_LOC_KEY, newInitialLoc);
-        })
-        .catch((err) => {
-          reportError('Failed to save initial map location', err, true);
-        });
-    };
     map.on('idle', onIdle);
     return () => {
       map.off('idle', onIdle);
