@@ -36,7 +36,9 @@ vi.mock(import('@heroui/react'), async (importOriginal) => {
   return original;
 });
 
-vi.mock('react-map-gl/maplibre');
+vi.mock('../LocationMap', () => ({
+  default: () => null,
+}));
 vi.mock('@tauri-apps/api/menu');
 
 const Wrapper = ({ children }: { children: ReactNode }) => (

@@ -14,8 +14,17 @@ function normalizeDetail(error: unknown): string {
   return String(error);
 }
 
-export function reportError(message: string, error: unknown): void {
+export function reportError(
+  message: string,
+  error: unknown,
+  logOnly?: boolean,
+): void {
   console.error(`${message}:`, error);
+
+  if (logOnly) {
+    return;
+  }
+
   emit(ERROR_REPORTED_EVENT, {
     message,
     detail: normalizeDetail(error),
