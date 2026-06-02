@@ -1,6 +1,7 @@
 import { Skeleton } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import type { ExifData } from '@metadata-handler/exifdata';
+import { reportError } from '@platform/error-reporter';
 import { FOCUS_ON_LOCATION_EVENT } from '@platform/menus/tools-menu';
 import { load } from '@tauri-apps/plugin-store';
 import maplibregl, { type Map as MaplibreMap } from 'maplibre-gl';
@@ -31,7 +32,7 @@ async function loadInitialLoc(): Promise<Loc> {
     const parsed = await Loc.safeParseAsync(raw);
     return parsed.success ? parsed.data : DEFAULT_LOC;
   } catch (err) {
-    console.error('Failed to load map state:', err);
+    reportError('Failed to load map state', err, true);
     return DEFAULT_LOC;
   }
 }
@@ -143,7 +144,7 @@ function MapView({ initialLoc }: { initialLoc: Loc }) {
           return store.set(INITIAL_LOC_KEY, newInitialLoc);
         })
         .catch((err) => {
-          console.error('Failed to save new initial map location:', err);
+          reportError('Failed to save initial map location', err, true);
         });
     };
     map.on('idle', onIdle);
