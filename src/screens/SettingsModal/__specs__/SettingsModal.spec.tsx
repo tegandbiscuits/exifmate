@@ -53,6 +53,7 @@ describe('SettingsModal', () => {
 
     const fakeSettings: Settings = {
       originalFileBehavior: 'overwrite_original_in_place',
+      theme: 'system',
     };
     mockLoadSettings.mockResolvedValue(fakeSettings);
   });
@@ -79,6 +80,7 @@ describe('SettingsModal', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(mockSaveSettings).toHaveBeenCalledExactlyOnceWith({
       originalFileBehavior: 'copy_original',
+      theme: 'system',
     });
     await waitFor(() => expect(screen.queryByText('Settings')).toBeNull());
     expect(toastMock.success).toHaveBeenCalledExactlyOnceWith(
@@ -88,6 +90,24 @@ describe('SettingsModal', () => {
       },
     );
     expect(errorHandler).not.toHaveBeenCalled();
+  });
+
+  it('saves the selected appearance', async () => {
+    render(<SettingsModal />);
+    await act(async () => {
+      await emit(OPEN_SETTINGS_EVENT);
+    });
+
+    await waitFor(() => expect(screen.getByText('Settings')).toBeVisible());
+    expect(screen.getByRole('radio', { name: /^System/ })).toBeChecked();
+
+    await userEvent.click(screen.getByRole('radio', { name: /^Dark/ }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mockSaveSettings).toHaveBeenCalledExactlyOnceWith({
+      originalFileBehavior: 'overwrite_original_in_place',
+      theme: 'dark',
+    });
   });
 
   it('reports an error if the settings fail to load', async () => {

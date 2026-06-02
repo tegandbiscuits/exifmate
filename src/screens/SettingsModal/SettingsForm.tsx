@@ -61,6 +61,7 @@ function SettingsForm({ onClose }: Props) {
       <Modal.Body>
         <form
           id="settings-form"
+          className="flex flex-col gap-4"
           onSubmit={handleSubmit(async (newSettings) => {
             try {
               await saveSettings(newSettings);
@@ -115,6 +116,45 @@ function SettingsForm({ onClose }: Props) {
                 </RadioGroup>
               );
             }}
+          />
+          <Controller
+            name="theme"
+            control={control}
+            render={({ field: { disabled, value, ...field } }) => (
+              <RadioGroup
+                {...field}
+                isDisabled={disabled}
+                value={value ?? 'system'}
+                variant="secondary"
+              >
+                <Label>Appearance</Label>
+
+                <Radio value="system">
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  <Radio.Content>
+                    <Label>System</Label>
+                  </Radio.Content>
+                </Radio>
+                <Radio value="light">
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  <Radio.Content>
+                    <Label>Light</Label>
+                  </Radio.Content>
+                </Radio>
+                <Radio value="dark">
+                  <Radio.Control>
+                    <Radio.Indicator />
+                  </Radio.Control>
+                  <Radio.Content>
+                    <Label>Dark</Label>
+                  </Radio.Content>
+                </Radio>
+              </RadioGroup>
+            )}
           />
         </form>
       </Modal.Body>

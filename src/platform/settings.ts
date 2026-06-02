@@ -9,6 +9,7 @@ export const Settings = z.object({
       'overwrite_original_in_place',
     ])
     .optional(),
+  theme: z.enum(['system', 'light', 'dark']).default('system').optional(),
 });
 
 export type Settings = z.infer<typeof Settings>;
