@@ -35,7 +35,6 @@ function SelectInput({ tagName, description, options }: Props) {
         return (
           <Select
             {...field}
-            variant="secondary"
             isDisabled={disabled}
             isInvalid={invalid}
             onChange={(newValue) => {

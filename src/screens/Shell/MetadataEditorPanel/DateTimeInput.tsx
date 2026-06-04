@@ -71,7 +71,7 @@ function DateTimeInput({ tagName, description }: Props) {
             {({ state }) => (
               <>
                 <Label>{label}</Label>
-                <DateField.Group fullWidth variant="secondary">
+                <DateField.Group fullWidth>
                   <DateField.Input>
                     {(segment) => <DateField.Segment segment={segment} />}
                   </DateField.Input>
@@ -119,7 +119,7 @@ function DateTimeInput({ tagName, description }: Props) {
                       value={state.timeValue}
                       onChange={(v) => state.setTimeValue(v as TimeValue)}
                     >
-                      <TimeField.Group variant="secondary">
+                      <TimeField.Group>
                         <TimeField.Input>
                           {(segment) => <TimeField.Segment segment={segment} />}
                         </TimeField.Input>
