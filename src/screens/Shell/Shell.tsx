@@ -54,7 +54,10 @@ function Shell() {
         className="p-2 gap-1"
       >
         <Panel defaultSize={65}>
-          <Surface className="h-full overflow-auto rounded-3xl">
+          <Surface
+            variant="secondary"
+            className="h-full overflow-auto rounded-3xl"
+          >
             <ImageGridPanel onImageSelection={setSelectedImages} />
           </Surface>
         </Panel>
@@ -62,7 +65,10 @@ function Shell() {
         <Separator />
 
         <Panel defaultSize={35}>
-          <Surface className="h-full flex flex-col rounded-3xl">
+          <Surface
+            variant="secondary"
+            className="h-full flex flex-col rounded-3xl"
+          >
             <MetadataEditorPanel selectedImages={selectedImages} />
           </Surface>
         </Panel>
