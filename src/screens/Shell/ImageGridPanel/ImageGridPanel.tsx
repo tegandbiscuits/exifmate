@@ -58,7 +58,7 @@ function ImageGridPanel({ onImageSelection }: Props) {
           <ListBox.Item
             id={image.path}
             textValue={image.path}
-            className="w-fit data-selected:bg-default group p-2 rounded-field"
+            className="w-fit data-selected:bg-accent-soft data-selected:data-hovered:bg-accent-soft-hover group p-2 rounded-field"
             aria-label={image.filename}
           >
             <ListBox.ItemIndicator
