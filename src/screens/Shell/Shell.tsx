@@ -1,5 +1,6 @@
 import { Surface } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
+import useTheme from '@hooks/useTheme';
 import { IMAGES_OPENED_EVENT, type ImageInfo } from '@platform/file-manager';
 import FileMenu, { REVEAL_IN_DIR_EVENT } from '@platform/menus/file-menu';
 import type { MenuItem } from '@tauri-apps/api/menu';
@@ -15,6 +16,8 @@ import ImageGridPanel from './ImageGridPanel/ImageGridPanel';
 import MetadataEditorPanel from './MetadataEditorPanel/MetadataEditorPanel';
 
 function Shell() {
+  useTheme();
+
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
     id: 'root-views',
     storage: localStorage,

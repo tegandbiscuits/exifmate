@@ -19,6 +19,7 @@ vi.mock('@metadata-handler/read');
 vi.mock('@tauri-apps/plugin-store', () => ({
   load: vi.fn<typeof load>(() => new Promise(() => {})),
 }));
+vi.mock('@hooks/useTheme');
 vi.mock(import('@heroui/react'), async (importOriginal) => {
   const original = await importOriginal();
   original.toast.success = vi.fn();

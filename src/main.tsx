@@ -14,6 +14,21 @@ if (!root) {
   throw new Error('Failed to mount react');
 }
 
+function initialTheme() {
+  const savedTheme = localStorage.getItem('exifmate.theme');
+  if (savedTheme === 'light' || savedTheme === 'dark') {
+    return savedTheme;
+  }
+
+  if (window.matchMedia('prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+
+  return 'light';
+}
+
+document.documentElement.classList.add(initialTheme());
+
 createRoot(root).render(
   <StrictMode>
     <ToastProvider />
