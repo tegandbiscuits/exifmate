@@ -1,5 +1,6 @@
+import Button from '@components/Button';
 import Center from '@components/Center';
-import { Button, Chip, ListBox } from '@heroui/react';
+import { Chip, ListBox } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import type { ImageInfo } from '@platform/file-manager';
 import { findImages, IMAGES_OPENED_EVENT } from '@platform/file-manager';
