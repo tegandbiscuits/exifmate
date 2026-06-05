@@ -17,7 +17,9 @@
         "height": 700,
         "visible": false,
         "decorations": true,
-        "hiddenTitle": true
+        "hiddenTitle": true,
+        "titleBarStyle": "Overlay",
+        "dragDropEnabled": true
       }
     ],
     "security": {
