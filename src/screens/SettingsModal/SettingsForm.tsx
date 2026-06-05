@@ -1,5 +1,5 @@
+import Button from '@components/Button';
 import {
-  Button,
   Description,
   Label,
   Modal,
@@ -160,12 +160,13 @@ function SettingsForm({ onClose }: Props) {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button slot="close" variant="secondary" onPress={onClose}>
+        <Button slot="close" variant="ghost" onPress={onClose}>
           Cancel
         </Button>
         <Button
           form="settings-form"
           type="submit"
+          variant="success"
           isPending={isSubmitting || res.isLoading}
           isDisabled={disabled}
         >

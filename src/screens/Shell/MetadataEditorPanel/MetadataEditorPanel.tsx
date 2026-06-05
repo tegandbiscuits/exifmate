@@ -1,5 +1,6 @@
+import Button from '@components/Button';
 import Center from '@components/Center';
-import { Alert, Button, Spinner, Surface, Tabs, toast } from '@heroui/react';
+import { Alert, Spinner, Surface, Tabs, toast } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import {
   defaultExifData,
@@ -192,13 +193,19 @@ function MetadataEditorPanel({ selectedImages }: Props) {
         >
           <Tabs.ListContainer aria-label="Editor Tabs" className="pt-2 px-2">
             <Tabs.List>
-              <Tabs.Tab id="EXIF">
+              <Tabs.Tab
+                id="EXIF"
+                className="data-selected:text-accent-foreground"
+              >
                 EXIF
-                <Tabs.Indicator />
+                <Tabs.Indicator className="bg-accent" />
               </Tabs.Tab>
-              <Tabs.Tab id="Location">
+              <Tabs.Tab
+                id="Location"
+                className="data-selected:text-accent-foreground"
+              >
                 Location
-                <Tabs.Indicator />
+                <Tabs.Indicator className="bg-accent" />
               </Tabs.Tab>
             </Tabs.List>
           </Tabs.ListContainer>
@@ -226,7 +233,7 @@ function MetadataEditorPanel({ selectedImages }: Props) {
             <>
               <Button
                 isDisabled={isSubmitting}
-                variant="secondary"
+                variant="ghost"
                 onPress={() => {
                   setIsEditing(false);
                   form.reset();
@@ -237,6 +244,7 @@ function MetadataEditorPanel({ selectedImages }: Props) {
 
               <Button
                 type="submit"
+                variant="success"
                 isDisabled={badState}
                 isPending={isSubmitting}
               >

@@ -1,4 +1,5 @@
-import { Button, Tooltip } from '@heroui/react';
+import Button from '@components/Button';
+import { Tooltip } from '@heroui/react';
 import type { ExifData } from '@metadata-handler/exifdata';
 import { readText } from '@tauri-apps/plugin-clipboard-manager';
 import { useState } from 'react';

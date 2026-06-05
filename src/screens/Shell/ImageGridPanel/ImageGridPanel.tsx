@@ -1,5 +1,6 @@
+import Button from '@components/Button';
 import Center from '@components/Center';
-import { Button, Chip, ListBox } from '@heroui/react';
+import { Chip, ListBox } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import type { ImageInfo } from '@platform/file-manager';
 import { findImages, IMAGES_OPENED_EVENT } from '@platform/file-manager';
@@ -58,7 +59,7 @@ function ImageGridPanel({ onImageSelection }: Props) {
           <ListBox.Item
             id={image.path}
             textValue={image.path}
-            className="w-fit data-selected:bg-default group p-2 rounded-field"
+            className="w-fit data-selected:bg-accent-soft data-selected:data-hovered:bg-accent-soft-hover group p-2 rounded-field"
             aria-label={image.filename}
           >
             <ListBox.ItemIndicator

@@ -5,6 +5,7 @@ import { IMAGES_OPENED_EVENT, type ImageInfo } from '@platform/file-manager';
 import FileMenu, { REVEAL_IN_DIR_EVENT } from '@platform/menus/file-menu';
 import type { MenuItem } from '@tauri-apps/api/menu';
 import { revealItemInDir } from '@tauri-apps/plugin-opener';
+import { platform } from '@tauri-apps/plugin-os';
 import { useEffect, useState } from 'react';
 import {
   Group,
@@ -51,10 +52,14 @@ function Shell() {
       <Group
         defaultLayout={defaultLayout}
         onLayoutChanged={onLayoutChanged}
-        className="p-2 gap-1"
+        data-tauri-drag-region
+        className={`p-2 gap-1 ${platform() === 'macos' && 'pt-8'}`}
       >
         <Panel defaultSize={65}>
-          <Surface className="h-full overflow-auto rounded-3xl">
+          <Surface
+            variant="secondary"
+            className="h-full overflow-auto rounded-3xl"
+          >
             <ImageGridPanel onImageSelection={setSelectedImages} />
           </Surface>
         </Panel>
@@ -62,7 +67,10 @@ function Shell() {
         <Separator />
 
         <Panel defaultSize={35}>
-          <Surface className="h-full flex flex-col rounded-3xl">
+          <Surface
+            variant="secondary"
+            className="h-full flex flex-col rounded-3xl"
+          >
             <MetadataEditorPanel selectedImages={selectedImages} />
           </Surface>
         </Panel>

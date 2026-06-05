@@ -29,7 +29,6 @@ function TextInput({ tagName, description }: Props) {
             isDisabled={disabled}
             name={label}
             isInvalid={invalid}
-            variant="secondary"
           >
             <Label>{label}</Label>
             <Input
