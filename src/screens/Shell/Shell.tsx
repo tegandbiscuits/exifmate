@@ -2,8 +2,10 @@ import { Surface } from '@heroui/react';
 import useTauriListener from '@hooks/useTauriListener';
 import useTheme from '@hooks/useTheme';
 import { IMAGES_OPENED_EVENT, type ImageInfo } from '@platform/file-manager';
-import FileMenu, { REVEAL_IN_DIR_EVENT } from '@platform/menus/file-menu';
-import type { MenuItem } from '@tauri-apps/api/menu';
+import {
+  REVEAL_IN_DIR_EVENT,
+  revealInDirMenuItem,
+} from '@platform/menus/file-menu';
 import { revealItemInDir } from '@tauri-apps/plugin-opener';
 import { platform } from '@tauri-apps/plugin-os';
 import { useEffect, useState } from 'react';
@@ -29,14 +31,12 @@ function Shell() {
   useEffect(() => {
     const enableReveal = selectedImages.length === 1;
 
-    FileMenu.get('reveal-in-dir')
-      .then((item) => (item as MenuItem).setEnabled(enableReveal))
-      .catch((err) => {
-        console.error(
-          `Failed to ${enableReveal ? 'enable' : 'disable'} reveal in dir menu item:`,
-          err,
-        );
-      });
+    revealInDirMenuItem.setEnabled(enableReveal).catch((err) => {
+      console.error(
+        `Failed to ${enableReveal ? 'enable' : 'disable'} reveal in dir menu item:`,
+        err,
+      );
+    });
   }, [selectedImages.length]);
 
   useTauriListener(REVEAL_IN_DIR_EVENT, async () => {
