@@ -1,8 +1,10 @@
 import { readMetadata } from '@metadata-handler/read';
 import { IMAGES_OPENED_EVENT } from '@platform/file-manager';
-import FileMenu, { REVEAL_IN_DIR_EVENT } from '@platform/menus/file-menu';
+import {
+  REVEAL_IN_DIR_EVENT,
+  revealInDirMenuItem,
+} from '@platform/menus/file-menu';
 import { emit } from '@tauri-apps/api/event';
-import type { MenuItem } from '@tauri-apps/api/menu';
 import { mockIPC } from '@tauri-apps/api/mocks';
 import { revealItemInDir } from '@tauri-apps/plugin-opener';
 import type { load } from '@tauri-apps/plugin-store';
@@ -177,15 +179,14 @@ describe('Shell', () => {
     });
 
     it('enables the reveal in dir menu item', async () => {
-      const item = await FileMenu.get('reveal-in-dir');
-      expect((item as MenuItem).setEnabled).toHaveBeenLastCalledWith(true);
+      expect(revealInDirMenuItem.setEnabled).toHaveBeenLastCalledWith(true);
 
       await userEvent.keyboard('{Meta>}');
       await userEvent.click(screen.getByLabelText('image-two.jpg'));
       await userEvent.keyboard('{/Meta}');
 
       await waitFor(() =>
-        expect((item as MenuItem).setEnabled).toHaveBeenLastCalledWith(false),
+        expect(revealInDirMenuItem.setEnabled).toHaveBeenLastCalledWith(false),
       );
     });
   });

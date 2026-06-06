@@ -12,12 +12,11 @@ import { updateMetadata } from '@metadata-handler/update';
 import { reportError } from '@platform/error-reporter';
 import type { ImageInfo } from '@platform/file-manager';
 import EditMenu from '@platform/menus/edit-menu';
-import FileMenu, { SAVE_METADATA_EVENT } from '@platform/menus/file-menu';
+import { SAVE_METADATA_EVENT, saveMenuItem } from '@platform/menus/file-menu';
 import ToolsMenu, {
   ENTER_METADATA_EDIT_EVENT,
   updateEditImagesLabel,
 } from '@platform/menus/tools-menu';
-import type { MenuItem } from '@tauri-apps/api/menu';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -90,14 +89,12 @@ function MetadataEditorPanel({ selectedImages }: Props) {
   });
 
   useEffect(() => {
-    FileMenu.get('save')
-      .then((item) => (item as MenuItem).setEnabled(!badState))
-      .catch((err) => {
-        console.error(
-          `Failed to ${!badState ? 'disable' : 'enable'} save menu:`,
-          err,
-        );
-      });
+    saveMenuItem.setEnabled(!badState).catch((err) => {
+      console.error(
+        `Failed to ${!badState ? 'disable' : 'enable'} save menu:`,
+        err,
+      );
+    });
   }, [badState]);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { findImages } from '@platform/file-manager';
 import { emit } from '@tauri-apps/api/event';
-import { PredefinedMenuItem, Submenu } from '@tauri-apps/api/menu';
+import { MenuItem, PredefinedMenuItem, Submenu } from '@tauri-apps/api/menu';
 import { platform } from '@tauri-apps/plugin-os';
 
 export const SAVE_METADATA_EVENT = 'editor:save-form';
@@ -20,9 +20,26 @@ switch (platform()) {
 }
 export const revealInDirLabel = `Reveal in ${fileManager}`;
 
+export const revealInDirMenuItem = await MenuItem.new({
+  text: revealInDirLabel,
+  async action() {
+    await emit(REVEAL_IN_DIR_EVENT);
+  },
+});
+
+export const saveMenuItem = await MenuItem.new({
+  text: 'Save',
+  accelerator: 'CmdOrCtrl+s',
+  enabled: false,
+  async action() {
+    await emit(SAVE_METADATA_EVENT);
+  },
+});
+
 const FileMenu = await Submenu.new({
   text: 'File',
   items: [
+    saveMenuItem,
     {
       text: 'Open...',
       accelerator: 'CmdOrCtrl+o',
@@ -30,23 +47,8 @@ const FileMenu = await Submenu.new({
         await findImages();
       },
     },
-    {
-      id: 'save',
-      text: 'Save',
-      accelerator: 'CmdOrCtrl+s',
-      enabled: false,
-      async action() {
-        await emit(SAVE_METADATA_EVENT);
-      },
-    },
     await PredefinedMenuItem.new({ item: 'Separator' }),
-    {
-      id: 'reveal-in-dir',
-      text: revealInDirLabel,
-      async action() {
-        await emit(REVEAL_IN_DIR_EVENT);
-      },
-    },
+    revealInDirMenuItem,
   ],
 });
 
